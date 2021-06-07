@@ -1,4 +1,9 @@
-package midterm.models;
+package midterm.models.accounts;
+
+import midterm.models.Address;
+import midterm.models.TransactionPartners;
+import midterm.models.enums.Period;
+import midterm.models.users.AccountHolder;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -11,6 +16,10 @@ public abstract class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Integer id;
+
+    @ManyToOne
+    @JoinColumn(name = "account_holder_id")
+    private AccountHolder accountHolder;
 
     @OneToMany(mappedBy="account")
     private List<TransactionPartners> transactionPartners;
@@ -28,16 +37,17 @@ public abstract class Account {
      this.creationDate= LocalDateTime.now();
     }
 
-    public Account(BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner, BigDecimal interestRate) {
+    public Account(BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner, BigDecimal interestRate, AccountHolder accountHolder) {
         this.creationDate= LocalDateTime.now();
         this.balance = balance;
         this.secretKey = secretKey;
         this.primaryOwner = primaryOwner;
         this.secondaryOwner = secondaryOwner;
         this.interestRate = interestRate;
+        this.accountHolder = accountHolder;
     }
 
-    public Account(Integer id, LocalDateTime creationDate, LocalDateTime interestRatePaymentDate, BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner, BigDecimal interestRate) {
+    public Account(Integer id, LocalDateTime creationDate, LocalDateTime interestRatePaymentDate, BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner, BigDecimal interestRate, AccountHolder accountHolder) {
         this.id = id;
         this.creationDate = creationDate;
         this.interestRatePaymentDate = interestRatePaymentDate;
@@ -46,6 +56,15 @@ public abstract class Account {
         this.primaryOwner = primaryOwner;
         this.secondaryOwner = secondaryOwner;
         this.interestRate = interestRate;
+        this.accountHolder = accountHolder;
+    }
+
+    public AccountHolder getAccountHolder() {
+        return accountHolder;
+    }
+
+    public void setAccountHolder(AccountHolder accountHolder) {
+        this.accountHolder = accountHolder;
     }
 
     public Integer getId() {

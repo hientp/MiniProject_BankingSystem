@@ -1,4 +1,6 @@
-package midterm.models;
+package midterm.models.accounts;
+
+import midterm.models.users.AccountHolder;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -16,14 +18,14 @@ public class CreditCard extends Account {
         setInterestRate(new BigDecimal("0.2"));
     }
 
-    public CreditCard(BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner, BigDecimal interestRate,BigDecimal creditLimit) {
-        super(balance, secretKey, primaryOwner, secondaryOwner, interestRate);
+    public CreditCard(BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner, BigDecimal interestRate,BigDecimal creditLimit, AccountHolder accountHolder) {
+        super(balance, secretKey, primaryOwner, secondaryOwner, interestRate,accountHolder);
         setInterestRatePaymentDate(getCreationDate().plusMonths(1));
         this.creditLimit = creditLimit;
     }
 
-    public CreditCard(Integer id, LocalDateTime creationDate, LocalDateTime nextDateForInterestPayment, BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner, BigDecimal interestRate, BigDecimal creditLimit) {
-        super(id, creationDate, nextDateForInterestPayment, balance, secretKey, primaryOwner, secondaryOwner, interestRate);
+    public CreditCard(Integer id, LocalDateTime creationDate, LocalDateTime nextDateForInterestPayment, BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner, BigDecimal interestRate, BigDecimal creditLimit, AccountHolder accountHolder) {
+        super(id, creationDate, nextDateForInterestPayment, balance, secretKey, primaryOwner, secondaryOwner, interestRate,accountHolder);
         this.creditLimit = creditLimit;
     }
 

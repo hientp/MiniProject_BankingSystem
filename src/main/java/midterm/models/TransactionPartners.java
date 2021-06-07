@@ -1,5 +1,8 @@
 package midterm.models;
 
+import midterm.models.accounts.Account;
+import midterm.models.enums.Alignment;
+
 import javax.persistence.*;
 
 @Entity(name="TransactionPartners")

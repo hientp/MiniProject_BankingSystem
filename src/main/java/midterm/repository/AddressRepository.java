@@ -1,10 +1,9 @@
 package midterm.repository;
 
-
-import midterm.models.accounts.Account;
+import midterm.models.Address;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AccountRepository extends JpaRepository<Account,Integer> {
+public interface AddressRepository extends JpaRepository<Address,Integer> {
 }

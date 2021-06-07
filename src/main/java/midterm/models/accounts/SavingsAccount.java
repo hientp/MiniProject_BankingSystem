@@ -1,7 +1,7 @@
-package midterm.models;
+package midterm.models.accounts;
 
-import midterm.models.Account;
-import midterm.models.Status;
+import midterm.models.enums.Status;
+import midterm.models.users.AccountHolder;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -21,15 +21,15 @@ public class SavingsAccount extends Account {
         setInterestRate(new BigDecimal("0.0025"));
     }
 
-    public SavingsAccount(BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner, BigDecimal interestRate, BigDecimal minimumBalance,  Status status) {
-        super(balance, secretKey, primaryOwner, secondaryOwner, interestRate);
+    public SavingsAccount(BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner, BigDecimal interestRate, BigDecimal minimumBalance,  Status status, AccountHolder accountHolder) {
+        super(balance, secretKey, primaryOwner, secondaryOwner, interestRate,accountHolder);
         setInterestRatePaymentDate(getCreationDate().plusYears(1));
         this.minimumBalance = minimumBalance;
         this.status = status;
     }
 
-    public SavingsAccount(Integer id, LocalDateTime creationDate, LocalDateTime nextDateForInterestPayment, BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner, BigDecimal interestRate, BigDecimal minimumBalance,  Status status) {
-        super(id, creationDate, nextDateForInterestPayment, balance, secretKey, primaryOwner, secondaryOwner, interestRate);
+    public SavingsAccount(Integer id, LocalDateTime creationDate, LocalDateTime nextDateForInterestPayment, BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner, BigDecimal interestRate, BigDecimal minimumBalance,  Status status, AccountHolder accountHolder) {
+        super(id, creationDate, nextDateForInterestPayment, balance, secretKey, primaryOwner, secondaryOwner, interestRate,accountHolder);
         setInterestRatePaymentDate(getCreationDate().plusYears(1));
         this.minimumBalance = minimumBalance;
         this.status = status;

@@ -1,17 +1,18 @@
 package midterm.models;
 
-import org.aspectj.lang.annotation.Before;
+import midterm.models.accounts.CheckingAccount;
+import midterm.models.accounts.CreditCard;
+import midterm.models.accounts.SavingsAccount;
+import midterm.models.enums.Status;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 

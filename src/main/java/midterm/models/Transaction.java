@@ -1,7 +1,5 @@
 package midterm.models;
 
-import midterm.models.Account;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

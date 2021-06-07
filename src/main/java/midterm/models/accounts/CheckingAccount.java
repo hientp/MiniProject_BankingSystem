@@ -1,9 +1,9 @@
-package midterm.models;
+package midterm.models.accounts;
 
-import org.apache.tomcat.jni.Local;
+import midterm.models.enums.Status;
+import midterm.models.users.AccountHolder;
 
 import javax.persistence.*;
-import javax.validation.constraints.Null;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -21,14 +21,14 @@ public class CheckingAccount extends Account {
         setInterestRate(new BigDecimal("0"));
     }
 
-    public CheckingAccount(BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner, Status status) {
-        super(balance, secretKey, primaryOwner, secondaryOwner, new BigDecimal("0"));
+    public CheckingAccount(BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner, Status status, AccountHolder accountHolder) {
+        super(balance, secretKey, primaryOwner, secondaryOwner, new BigDecimal("0"),accountHolder);
         setInterestRatePaymentDate(getCreationDate().plusYears(1));
         this.status = status;
     }
 
-    public CheckingAccount(Integer id, LocalDateTime creationDate, LocalDateTime nextDateForInterestPayment, BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner,  Status status) {
-        super(id, creationDate, nextDateForInterestPayment, balance, secretKey, primaryOwner, secondaryOwner, new BigDecimal("0")); //test
+    public CheckingAccount(Integer id, LocalDateTime creationDate, LocalDateTime nextDateForInterestPayment, BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner,  Status status, AccountHolder accountHolder) {
+        super(id, creationDate, nextDateForInterestPayment, balance, secretKey, primaryOwner, secondaryOwner, new BigDecimal("0"),accountHolder); //test
         this.status = status;
     }
 
