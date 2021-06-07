@@ -147,3 +147,8 @@
 /target/classes/midterm/repository/TransactionRepository.class
 /target/test-classes/midterm/repository/TransactionRepositoryTest.class
 /target/classes/midterm/models/User.class
+/.idea/
+/.idea/vcs.xml
+/target/classes/midterm/
+/target/classes/midterm/models/
+/target/classes/midterm/repository/

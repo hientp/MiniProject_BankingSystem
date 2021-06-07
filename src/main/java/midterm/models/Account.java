@@ -1,20 +1,19 @@
 package midterm.models;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Account {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    protected Integer id;
 
-
-
+    @OneToMany(mappedBy="account")
+    private List<TransactionPartners> transactionPartners;
 
     private LocalDateTime creationDate;
     private LocalDateTime interestRatePaymentDate;

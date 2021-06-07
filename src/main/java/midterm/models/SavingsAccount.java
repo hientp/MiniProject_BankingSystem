@@ -3,8 +3,7 @@ package midterm.models;
 import midterm.models.Account;
 import midterm.models.Status;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -13,6 +12,7 @@ import java.time.LocalDateTime;
 public class SavingsAccount extends Account {
     private BigDecimal minimumBalance= new BigDecimal("1000");
     private BigDecimal monthlyMaintenanceFee= new BigDecimal("0");
+    @Enumerated(EnumType.STRING)
     private Status status= Status.ACTIVE;
 
     public SavingsAccount() throws Exception{

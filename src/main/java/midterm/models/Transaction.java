@@ -5,6 +5,7 @@ import midterm.models.Account;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity(name = "Transaction")
 @Table(name = "transaction")
@@ -15,7 +16,10 @@ public class Transaction {
 
     private LocalDateTime dateTimeOfTransaction;
 
-      private BigDecimal amount;
+    @OneToMany(mappedBy="transaction")
+    private List<TransactionPartners> transactionPartners;
+
+    private BigDecimal amount;
 
     public Transaction() {
     }

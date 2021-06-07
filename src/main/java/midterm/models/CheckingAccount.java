@@ -2,8 +2,7 @@ package midterm.models;
 
 import org.apache.tomcat.jni.Local;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Null;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,6 +12,7 @@ import java.time.LocalDateTime;
 public class CheckingAccount extends Account {
     private BigDecimal minimumBalance = new BigDecimal("250");
     private BigDecimal monthlyMaintenanceFee= new BigDecimal("12");
+    @Enumerated(EnumType.STRING)
     private Status status= Status.ACTIVE;
 
     public CheckingAccount() throws Exception{
