@@ -316,10 +316,14 @@ class AccountTests {
 
     @Test
     public void testInterestPayments() throws Exception {
+        //Create new account one,two,three years ago from today and test if the correct interest is calculated
+        //FIXME add InterestPayments
     }
 
     @Test
     public void testMonthlyMaintenanceFee() throws Exception {
+        //For checkingAccounts the maintenanceFee needs to be deducted from the balance each month
+        //fixme add deduction for monthlymaintenance fee
     }
 
 

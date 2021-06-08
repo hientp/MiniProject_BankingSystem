@@ -18,13 +18,6 @@ public class Utils {
     public static void transactMoney(Account Sender, Account Receiver, TransactionRepository transactionRepository, TransactionPartnersRepository transactionPartnersRepository, BigDecimal amount) throws Exception {
         //FIXME Prüfung ob Fraud vorliegt (prüfung, friere jeweiligen account ein, führe die transaktion nicht aus und werfe exception)
         //Check if sender has enough money on account
-        BigDecimal availableMoney;
-        if(Sender instanceof CreditCard){
-            availableMoney=Sender.getBalance().add(((CreditCard) Sender).getCreditLimit());
-        } else {
-            availableMoney=Sender.getBalance();
-        }
-        if(availableMoney.compareTo(amount)>=0) {
             Sender.changeBalance(amount.multiply(new BigDecimal("-1")));
             Receiver.changeBalance(amount);
             Transaction newTransaction = new Transaction(LocalDateTime.now(), amount);
@@ -33,8 +26,5 @@ public class Utils {
             transactionRepository.save(newTransaction);
             transactionPartnersRepository.save(newTransactionPartner1);
             transactionPartnersRepository.save(newTransactionPartner2);
-        } else {
-            throw new Exception("There is not enough money on the account to transact the specified amount.");
-        }
     }
 }
