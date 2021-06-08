@@ -232,6 +232,97 @@ class AccountTests {
         assertFalse(violations.isEmpty());
     }
 
+    @Test
+    public void minimumBalance() throws Exception{
+        //FIXME how often the minimumbalance should be deducted?
+        //a) Checking Accounts
+        Address address = new Address("Default Str. 1", "Berlin", "Germany", "15x");
+        AccountHolder accountHolder= new AccountHolder("Test_Customer_2", new Date(70, 5, 20), address);
+        BigDecimal balance0=new BigDecimal("500");
+        CheckingAccount checkingAccount = new CheckingAccount(balance0, "secretKey", accountHolder, null, Status.ACTIVE);
+
+        checkingAccount.changeBalance(new BigDecimal("-250"));
+        assertEquals(checkingAccount.getBalance(),new BigDecimal("250"));
+        checkingAccount.changeBalance(new BigDecimal("-50"));
+        assertEquals(checkingAccount.getBalance(),new BigDecimal("160"));
+
+        //b) Savings Accounts
+        BigDecimal balance1=new BigDecimal("1200");
+        BigDecimal minimumBalance1=new BigDecimal("1000");
+        BigDecimal interestRate1=new BigDecimal("0.5");
+        SavingsAccount savingsAccount = new SavingsAccount(balance1,"secretKey",accountHolder,null,interestRate1,minimumBalance1,Status.ACTIVE);
+
+        savingsAccount.changeBalance(new BigDecimal("-200"));
+        assertEquals(savingsAccount.getBalance(),new BigDecimal("1000"));
+        savingsAccount.changeBalance(new BigDecimal("-200"));
+        assertEquals(savingsAccount.getBalance(),new BigDecimal("760"));
+
+    }
+
+    @Test
+    public void testLowerBalanceBoundary() throws Exception{
+        //a) Checking Accounts
+        Address address = new Address("Default Str. 1", "Berlin", "Germany", "15x");
+        AccountHolder accountHolder= new AccountHolder("Test_Customer_2", new Date(70, 5, 20), address);
+        BigDecimal balance0=new BigDecimal("500");
+        CheckingAccount checkingAccount = new CheckingAccount(balance0, "secretKey", accountHolder, null, Status.ACTIVE);
+
+        checkingAccount.changeBalance(new BigDecimal("-460"));
+        assertEquals(checkingAccount.getBalance(),new BigDecimal("0"));
+
+        CheckingAccount finalCheckingAccount = checkingAccount;
+        Exception exception = assertThrows(Exception.class, () -> {
+            finalCheckingAccount.changeBalance(new BigDecimal("-1"));
+        });
+
+        assertTrue(exception.getMessage().contains("The balance of this account would drop below 0! Transaction denied."));
+        assertEquals(finalCheckingAccount.getBalance(),new BigDecimal("0"));
+
+        //b) Savings Accounts
+        BigDecimal balance1=new BigDecimal("1200");
+        BigDecimal minimumBalance1=new BigDecimal("1000");
+        BigDecimal interestRate1=new BigDecimal("0.5");
+        SavingsAccount savingsAccount = new SavingsAccount(balance1,"secretKey",accountHolder,null,interestRate1,minimumBalance1,Status.ACTIVE);
+
+        savingsAccount.changeBalance(new BigDecimal("-1160"));
+        assertEquals(savingsAccount.getBalance(),new BigDecimal("0"));
+
+        SavingsAccount finalSavingsAccount = savingsAccount;
+        exception = assertThrows(Exception.class, () -> {
+            finalSavingsAccount.changeBalance(new BigDecimal("-1"));
+        });
+
+        assertTrue(exception.getMessage().contains("The balance of this account would drop below 0! Transaction denied."));
+        assertEquals(finalSavingsAccount.getBalance(),new BigDecimal("0"));
+
+        //c) Credit Card
+        balance1=new BigDecimal("1000");
+        BigDecimal creditLimit=new BigDecimal("1000");
+        interestRate1=new BigDecimal("0.2");
+        CreditCard creditCard = new CreditCard(balance1,"secretKey",accountHolder,null,interestRate1,creditLimit);
+
+        creditCard.changeBalance(new BigDecimal("-2000"));
+        assertEquals(creditCard.getBalance(),new BigDecimal("-1000"));
+
+        CreditCard finalCreditCard = creditCard;
+        exception = assertThrows(Exception.class, () -> {
+            finalCreditCard.changeBalance(new BigDecimal("-1"));
+        });
+
+        assertTrue(exception.getMessage().contains("The credit limit for this account is 1000 ! It is not allowed that the balance exceeds the limit!"));
+        assertEquals(finalCreditCard.getBalance(),new BigDecimal("-1000"));
+
+    }
+
+    @Test
+    public void testInterestPayments() throws Exception {
+    }
+
+    @Test
+    public void testMonthlyMaintenanceFee() throws Exception {
+    }
+
+
 
 
 

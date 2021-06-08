@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "checking_account")
 public class CheckingAccount extends Account {
     private BigDecimal minimumBalance = new BigDecimal("250");
+    //FIXME the monthly maintenance fee needs to be deducted
     private BigDecimal monthlyMaintenanceFee= new BigDecimal("12");
     private BigDecimal interestRate= new BigDecimal("0");
 
@@ -26,22 +27,26 @@ public class CheckingAccount extends Account {
         super(balance, secretKey, primaryOwner, secondaryOwner, new BigDecimal("0"));
         setInterestRatePaymentDate(getCreationDate().plusYears(1));
         setInterestRate(interestRate);
+        setBalance(balance);
+        this.minimumBalance= new BigDecimal("250");
         this.status = status;
     }
 
     public CheckingAccount(Integer id, LocalDateTime creationDate, LocalDateTime nextDateForInterestPayment, BigDecimal balance, String secretKey, AccountHolder primaryOwner, AccountHolder secondaryOwner,  Status status) throws Exception{
         super(id, creationDate, nextDateForInterestPayment, balance, secretKey, primaryOwner, secondaryOwner, new BigDecimal("0")); //test
         setInterestRate(interestRate);
+        setBalance(balance);
+        this.minimumBalance= new BigDecimal("250");
         this.status = status;
     }
 
     public BigDecimal getMinimumBalance() {
-        return minimumBalance;
+        return this.minimumBalance;
     }
 
 
     public BigDecimal getMonthlyMaintenanceFee() {
-        return monthlyMaintenanceFee;
+        return this.monthlyMaintenanceFee;
     }
 
 
@@ -68,11 +73,24 @@ public class CheckingAccount extends Account {
 
     @Override
     //If balance drops below minimumBalance then the penaltyFee is automatically deducted
-    public void setBalance(BigDecimal newBalance){
-        if(newBalance.compareTo(minimumBalance)<0){
-            super.setBalance(newBalance.subtract(getPenaltyFee()));
+    //Balance can't drop below zero
+    public void setBalance(BigDecimal newBalance) throws Exception{
+        //Check if newBalance would be greater or equal zero
+        if(newBalance.compareTo(new BigDecimal("0"))>=0){
+            //Check if minimumBalance is reached
+            if(newBalance.compareTo(this.minimumBalance)<0){
+                super.setBalance(newBalance.subtract(getPenaltyFee()));
+            } else {
+                super.setBalance(newBalance);
+            }
         } else {
-            super.setBalance(newBalance);
+            throw new Exception("The balance of this account would drop below 0! Transaction denied.");
         }
     }
+
+    @Override
+    public void changeBalance(BigDecimal valueToChange) throws Exception{
+        setBalance(getBalance().add(valueToChange));
+    }
+
 }

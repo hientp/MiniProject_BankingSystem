@@ -36,6 +36,7 @@ public class SavingsAccount extends Account {
         super(balance, secretKey, primaryOwner, secondaryOwner, interestRate);
         setInterestRatePaymentDate(getCreationDate().plusYears(1));
         setInterestRate(interestRate);
+        setBalance(balance);
         this.minimumBalance = minimumBalance;
         this.status = status;
     }
@@ -44,6 +45,7 @@ public class SavingsAccount extends Account {
         super(id, creationDate, nextDateForInterestPayment, balance, secretKey, primaryOwner, secondaryOwner, interestRate);
         setInterestRatePaymentDate(getCreationDate().plusYears(1));
         setInterestRate(interestRate);
+        setBalance(balance);
         this.minimumBalance = minimumBalance;
         this.status = status;
     }
@@ -84,12 +86,24 @@ public class SavingsAccount extends Account {
 
     @Override
     //If balance drops below minimumBalance then the penaltyFee is automatically deducted
-    public void setBalance(BigDecimal newBalance){
-        if(newBalance.compareTo(minimumBalance)<0){
-            super.setBalance(newBalance.subtract(getPenaltyFee()));
+    //Balance can't drop below zero
+    public void setBalance(BigDecimal newBalance) throws Exception{
+        //Check if newBalance would be greater or equal zero
+        if(newBalance.compareTo(new BigDecimal("0"))>=0){
+            //Check if minimumBalance is reached
+            if(newBalance.compareTo(minimumBalance)<0){
+                super.setBalance(newBalance.subtract(getPenaltyFee()));
+            } else {
+                super.setBalance(newBalance);
+            }
         } else {
-            super.setBalance(newBalance);
+            throw new Exception("The balance of this account would drop below 0! Transaction denied.");
         }
+    }
+
+    @Override
+    public void changeBalance(BigDecimal valueToChange) throws Exception{
+        setBalance(getBalance().add(valueToChange));
     }
 
 }

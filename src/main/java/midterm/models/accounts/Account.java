@@ -35,6 +35,7 @@ public abstract class Account {
     private LocalDateTime interestRatePaymentDate;
     @NotNull
     private BigDecimal balance;
+    //FIXME CheckingAccount and SavingsAccounts can't have a balance below 0?! CreditCard can't have a balance below their creditLimit?!
     @NotNull @NotEmpty
     private String secretKey;
     private BigDecimal interestRate;
@@ -46,7 +47,7 @@ public abstract class Account {
 
     public Account(BigDecimal balance, String secretKey, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal interestRate) throws Exception{
         this.creationDate= LocalDateTime.now();
-        this.balance = balance;
+        this.balance=balance;
         this.secretKey = secretKey;
         this.primaryOwner = primaryOwner;
         this.secondaryOwner = secondaryOwner;
@@ -57,7 +58,7 @@ public abstract class Account {
         this.id = id;
         this.creationDate = creationDate;
         this.interestRatePaymentDate = interestRatePaymentDate;
-        this.balance = balance;
+        this.balance=balance;
         this.secretKey = secretKey;
         this.primaryOwner = primaryOwner;
         this.secondaryOwner = secondaryOwner;
@@ -93,8 +94,8 @@ public abstract class Account {
         return balance;
     }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
+    public void setBalance(BigDecimal balance) throws Exception {
+            this.balance = balance;
     }
 
     public String getSecretKey() {
@@ -147,8 +148,8 @@ public abstract class Account {
         }
     }
 
-    public void changeBalance(BigDecimal valueToChance){
-        setBalance(getBalance().add(valueToChance));
+    public void changeBalance(BigDecimal valueToChange) throws Exception{
+        setBalance(getBalance().add(valueToChange));
     }
 
 

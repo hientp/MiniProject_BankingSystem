@@ -33,12 +33,14 @@ public class CreditCard extends Account {
         super(balance, secretKey, primaryOwner, secondaryOwner, interestRate);
         setInterestRatePaymentDate(getCreationDate().plusMonths(1));
         setInterestRate(interestRate);
+        setBalance(balance);
         this.creditLimit = creditLimit;
     }
 
     public CreditCard(Integer id, LocalDateTime creationDate, LocalDateTime nextDateForInterestPayment, BigDecimal balance, String secretKey, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal interestRate, BigDecimal creditLimit) throws Exception{
         super(id, creationDate, nextDateForInterestPayment, balance, secretKey, primaryOwner, secondaryOwner, interestRate);
         setInterestRate(interestRate);
+        setBalance(balance);
         this.creditLimit = creditLimit;
     }
 
@@ -58,5 +60,19 @@ public class CreditCard extends Account {
     @Override
     public void setInterestRate(BigDecimal interestRate) throws Exception{
         this.interestRate = interestRate;
+    }
+
+    @Override
+    public void setBalance(BigDecimal balance) throws Exception {
+        if(balance.compareTo(this.getCreditLimit().multiply(new BigDecimal("-1")))<0){
+            throw new Exception("The credit limit for this account is "+ this.getCreditLimit()+" ! It is not allowed that the balance exceeds the limit!");
+        } else {
+            super.setBalance(balance);
+        }
+    }
+
+    @Override
+    public void changeBalance(BigDecimal valueToChange) throws Exception{
+        setBalance(getBalance().add(valueToChange));
     }
 }
