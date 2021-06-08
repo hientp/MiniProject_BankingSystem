@@ -78,8 +78,8 @@ public class GenerateTestData {
         //set up all accounts
         BigDecimal balance0, balance1, interestRate1,interestRate2,creditLimit1,minimumBalance1;
         for(int i=0;i<50;i++){
-            balance0=new BigDecimal("500").multiply(BigDecimal.valueOf(i));
-            balance1=new BigDecimal("200").multiply(BigDecimal.valueOf(i));
+            balance0=new BigDecimal("500").multiply(BigDecimal.valueOf(i+1));
+            balance1=new BigDecimal("200").multiply(BigDecimal.valueOf(i+1));
             interestRate1= new BigDecimal("0.1").add(new BigDecimal("0.0003").multiply(BigDecimal.valueOf(i)));
             interestRate2= new BigDecimal("0.0025").add(new BigDecimal("0.001").multiply(BigDecimal.valueOf(i)));
             minimumBalance1= new BigDecimal("100").add(new BigDecimal("10").multiply(BigDecimal.valueOf(i)));
@@ -98,7 +98,7 @@ public class GenerateTestData {
         //Transactions
         BigDecimal amount;
         for(int i=0;i<25;i++){
-            amount=new BigDecimal("100").multiply(BigDecimal.valueOf(i));
+            amount=new BigDecimal("10").multiply(BigDecimal.valueOf(i));
             Utils.transactMoney(checkingAccountList.get(i),checkingAccountList.get(i+25),transactionRepository,transactionPartnersRepository,amount);
         }
 
