@@ -6,6 +6,8 @@ import midterm.models.enums.Period;
 import midterm.models.users.AccountHolder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,18 +20,23 @@ public abstract class Account {
     protected Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "account_holder_id")
-    private AccountHolder accountHolder;
+    @JoinColumn(name = "primary_owner_id")
+    @NotNull(message = "You must supply a primary Owner!")
+    private AccountHolder primaryOwner;
+
+    @ManyToOne
+    @JoinColumn(name = "secondary_owner_id")
+    private AccountHolder secondaryOwner;
 
     @OneToMany(mappedBy="account")
     private List<TransactionPartners> transactionPartners;
 
     private LocalDateTime creationDate;
     private LocalDateTime interestRatePaymentDate;
+    @NotNull
     private BigDecimal balance;
+    @NotNull @NotEmpty
     private String secretKey;
-    private String primaryOwner;
-    private String secondaryOwner;
     private BigDecimal interestRate;
     private BigDecimal penaltyFee = new BigDecimal("40");
 
@@ -37,17 +44,16 @@ public abstract class Account {
      this.creationDate= LocalDateTime.now();
     }
 
-    public Account(BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner, BigDecimal interestRate, AccountHolder accountHolder) {
+    public Account(BigDecimal balance, String secretKey, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal interestRate) throws Exception{
         this.creationDate= LocalDateTime.now();
         this.balance = balance;
         this.secretKey = secretKey;
         this.primaryOwner = primaryOwner;
         this.secondaryOwner = secondaryOwner;
-        this.interestRate = interestRate;
-        this.accountHolder = accountHolder;
+        setInterestRate(interestRate);
     }
 
-    public Account(Integer id, LocalDateTime creationDate, LocalDateTime interestRatePaymentDate, BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner, BigDecimal interestRate, AccountHolder accountHolder) {
+    public Account(Integer id, LocalDateTime creationDate, LocalDateTime interestRatePaymentDate, BigDecimal balance, String secretKey, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal interestRate) throws Exception{
         this.id = id;
         this.creationDate = creationDate;
         this.interestRatePaymentDate = interestRatePaymentDate;
@@ -55,16 +61,7 @@ public abstract class Account {
         this.secretKey = secretKey;
         this.primaryOwner = primaryOwner;
         this.secondaryOwner = secondaryOwner;
-        this.interestRate = interestRate;
-        this.accountHolder = accountHolder;
-    }
-
-    public AccountHolder getAccountHolder() {
-        return accountHolder;
-    }
-
-    public void setAccountHolder(AccountHolder accountHolder) {
-        this.accountHolder = accountHolder;
+        setInterestRate(interestRate);
     }
 
     public Integer getId() {
@@ -108,19 +105,19 @@ public abstract class Account {
         this.secretKey = secretKey;
     }
 
-    public String getPrimaryOwner() {
+    public AccountHolder getPrimaryOwner() {
         return primaryOwner;
     }
 
-    public void setPrimaryOwner(String primaryOwner) {
+    public void setPrimaryOwner(AccountHolder primaryOwner) {
         this.primaryOwner = primaryOwner;
     }
 
-    public String getSecondaryOwner() {
+    public AccountHolder getSecondaryOwner() {
         return secondaryOwner;
     }
 
-    public void setSecondaryOwner(String secondaryOwner) {
+    public void setSecondaryOwner(AccountHolder secondaryOwner) {
         this.secondaryOwner = secondaryOwner;
     }
 
@@ -148,6 +145,10 @@ public abstract class Account {
             default:
                 System.err.println("Period must be monthly or yearly");
         }
+    }
+
+    public void changeBalance(BigDecimal valueToChance){
+        setBalance(getBalance().add(valueToChance));
     }
 
 

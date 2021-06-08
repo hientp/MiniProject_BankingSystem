@@ -12,8 +12,6 @@ import java.util.Set;
 @Entity(name= "AccountHolder")
 public class AccountHolder extends FirstPartyUser{
 
-    @OneToMany(mappedBy = "accountHolder")
-    Set<Account> accounts=  new HashSet<>();
 
     public AccountHolder() {
         super();

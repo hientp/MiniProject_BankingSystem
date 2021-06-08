@@ -5,6 +5,7 @@ import midterm.models.accounts.Account;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -12,15 +13,16 @@ import java.util.Set;
 public abstract class FirstPartyUser extends User{
     private Date birthDay;
 
-//    @ManyToMany(mappedBy = "firstpartyuser")
-//    private Set<Address> addresses;
-
     @ManyToOne
     @JoinColumn(name = "address_id")
     private Address address;
 
-//    @ManyToOne
-//    private Set<Account> accounts;
+    @OneToMany(mappedBy = "primaryOwner")
+    Set<Account> firstPartyAccounts=  new HashSet<>();
+
+    @OneToMany(mappedBy = "secondaryOwner")
+    Set<Account> secondPartyAccounts=  new HashSet<>();
+
 
     public FirstPartyUser() {
     super();

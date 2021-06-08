@@ -12,23 +12,26 @@ import java.time.LocalDateTime;
 public class CheckingAccount extends Account {
     private BigDecimal minimumBalance = new BigDecimal("250");
     private BigDecimal monthlyMaintenanceFee= new BigDecimal("12");
+    private BigDecimal interestRate= new BigDecimal("0");
+
     @Enumerated(EnumType.STRING)
     private Status status= Status.ACTIVE;
 
     public CheckingAccount() throws Exception{
         super();
         setInterestRatePaymentDate(getCreationDate().plusYears(1));
-        setInterestRate(new BigDecimal("0"));
     }
 
-    public CheckingAccount(BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner, Status status, AccountHolder accountHolder) {
-        super(balance, secretKey, primaryOwner, secondaryOwner, new BigDecimal("0"),accountHolder);
+    public CheckingAccount(BigDecimal balance, String secretKey, AccountHolder primaryOwner, AccountHolder secondaryOwner, Status status) throws Exception{
+        super(balance, secretKey, primaryOwner, secondaryOwner, new BigDecimal("0"));
         setInterestRatePaymentDate(getCreationDate().plusYears(1));
+        setInterestRate(interestRate);
         this.status = status;
     }
 
-    public CheckingAccount(Integer id, LocalDateTime creationDate, LocalDateTime nextDateForInterestPayment, BigDecimal balance, String secretKey, String primaryOwner, String secondaryOwner,  Status status, AccountHolder accountHolder) {
-        super(id, creationDate, nextDateForInterestPayment, balance, secretKey, primaryOwner, secondaryOwner, new BigDecimal("0"),accountHolder); //test
+    public CheckingAccount(Integer id, LocalDateTime creationDate, LocalDateTime nextDateForInterestPayment, BigDecimal balance, String secretKey, AccountHolder primaryOwner, AccountHolder secondaryOwner,  Status status) throws Exception{
+        super(id, creationDate, nextDateForInterestPayment, balance, secretKey, primaryOwner, secondaryOwner, new BigDecimal("0")); //test
+        setInterestRate(interestRate);
         this.status = status;
     }
 
@@ -56,5 +59,20 @@ public class CheckingAccount extends Account {
             throw new Exception("Checking Accounts have an interest rate of 0! Rate of 0 has been set.");
         }
         super.setInterestRate(new BigDecimal("0"));
+    }
+
+    @Override
+    public BigDecimal getInterestRate(){
+        return this.interestRate;
+    }
+
+    @Override
+    //If balance drops below minimumBalance then the penaltyFee is automatically deducted
+    public void setBalance(BigDecimal newBalance){
+        if(newBalance.compareTo(minimumBalance)<0){
+            super.setBalance(newBalance.subtract(getPenaltyFee()));
+        } else {
+            super.setBalance(newBalance);
+        }
     }
 }
