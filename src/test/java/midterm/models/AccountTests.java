@@ -5,6 +5,8 @@ import midterm.models.accounts.CreditCard;
 import midterm.models.accounts.SavingsAccount;
 import midterm.models.enums.Status;
 import midterm.models.users.AccountHolder;
+import org.apache.tomcat.jni.Local;
+import org.assertj.core.util.DateUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -317,7 +319,62 @@ class AccountTests {
     @Test
     public void testInterestPayments() throws Exception {
         //Create new account one,two,three years ago from today and test if the correct interest is calculated
-        //FIXME add InterestPayments
+        //a) Checking Accounts
+        Address address = new Address("Default Str. 1", "Berlin", "Germany", "15x");
+        AccountHolder accountHolder= new AccountHolder("Test_Customer_2", new Date(70, 5, 20), address);
+        BigDecimal balance0=new BigDecimal("1000");
+        CheckingAccount checkingAccount = new CheckingAccount(balance0, "secretKey", accountHolder, null, Status.ACTIVE);
+        LocalDateTime thirteenMonthsBeforeNow = LocalDateTime.now().minusMonths(13);
+        checkingAccount.setCreationDate(thirteenMonthsBeforeNow);
+
+        LocalDateTime date1= checkingAccount.getInterestRatePaymentDate();
+        LocalDateTime date2= LocalDateTime.now().minusMonths(1);
+        assertEquals(date1.withNano(0),date2.withNano(0));
+        assertEquals(checkingAccount.getBalance(),balance0);
+        date1= checkingAccount.getInterestRatePaymentDate();
+        date2= LocalDateTime.now().plusMonths(11);
+        assertEquals(date1.withNano(0),date2.withNano(0));
+
+        //SavingsAccount
+        BigDecimal balance1=new BigDecimal("1000");
+        BigDecimal minimumBalance1=new BigDecimal("1000");
+        BigDecimal interestRate1=new BigDecimal("0.5");
+        SavingsAccount savingsAccount = new SavingsAccount(balance1,"secretKey",accountHolder,null,interestRate1,minimumBalance1,Status.ACTIVE);
+        //13months before now
+        thirteenMonthsBeforeNow = LocalDateTime.now().minusMonths(13);
+        savingsAccount.setCreationDate(thirteenMonthsBeforeNow);
+
+        date1= savingsAccount.getInterestRatePaymentDate();
+        date2= LocalDateTime.now().minusMonths(1);
+        assertEquals(date1.withNano(0),date2.withNano(0));
+        assertEquals(savingsAccount.getBalance(),new BigDecimal("1005.000"));
+        date1= savingsAccount.getInterestRatePaymentDate();
+        date2= LocalDateTime.now().plusMonths(11);
+        assertEquals(date1.withNano(0),date2.withNano(0));
+
+        //25months before now
+        LocalDateTime twentyFiveMonthsBeforeNow = LocalDateTime.now().minusMonths(25);
+        savingsAccount.setBalance(new BigDecimal("1000"));
+        savingsAccount.setCreationDate(twentyFiveMonthsBeforeNow);
+
+        date1= savingsAccount.getInterestRatePaymentDate();
+        date2= LocalDateTime.now().minusMonths(13);
+        assertEquals(date1.withNano(0),date2.withNano(0));
+        assertEquals(savingsAccount.getBalance(),new BigDecimal("1010.025000"));
+        date1= savingsAccount.getInterestRatePaymentDate();
+        date2= LocalDateTime.now().plusMonths(11);
+        assertEquals(date1.withNano(0),date2.withNano(0));
+
+        //c) Credit Card
+        balance1=new BigDecimal("-100");
+        BigDecimal creditLimit=new BigDecimal("1000");
+        interestRate1=new BigDecimal("0.2");
+        CreditCard creditCard = new CreditCard(balance1,"secretKey",accountHolder,null,interestRate1,creditLimit);
+        //13months before now
+        thirteenMonthsBeforeNow = LocalDateTime.now().minusMonths(13);
+        savingsAccount.setCreationDate(thirteenMonthsBeforeNow);
+
+
     }
 
     @Test

@@ -78,6 +78,7 @@ public abstract class Account {
     }
 
     public void setCreationDate(LocalDateTime creationDate) {
+
         this.creationDate = creationDate;
     }
 
@@ -90,7 +91,7 @@ public abstract class Account {
         this.interestRatePaymentDate = interestRatePaymentDate;
     }
 
-    public BigDecimal getBalance() {
+    public BigDecimal getBalance() throws Exception {
         return balance;
     }
 

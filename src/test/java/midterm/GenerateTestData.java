@@ -99,7 +99,7 @@ public class GenerateTestData {
         BigDecimal amount;
         for(int i=0;i<25;i++){
             amount=new BigDecimal("10").multiply(BigDecimal.valueOf(i));
-            Utils.transactMoney(checkingAccountList.get(i),checkingAccountList.get(i+25),transactionRepository,transactionPartnersRepository,amount);
+            Utils.transactMoney(accountRepository,checkingAccountList.get(i),checkingAccountList.get(i+25),transactionRepository,transactionPartnersRepository,amount);
         }
 
     }

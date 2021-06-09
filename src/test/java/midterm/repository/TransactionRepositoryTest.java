@@ -17,7 +17,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -100,33 +105,55 @@ class TransactionRepositoryTest {
 
         //Test utils functions
         //Default Balances CA1: 2000, CA2:1000 ; minimumBalance: 250
-        Utils.transactMoney(CA_1,CA_2,transactionRepository,transactionPartnersRepository,new BigDecimal("500"));
+        Utils.transactMoney(accountRepository,CA_1,CA_2,transactionRepository,transactionPartnersRepository,new BigDecimal("500"));
         assertEquals(CA_1.getBalance(),new BigDecimal("1500"));
         assertEquals(CA_2.getBalance(),new BigDecimal("1500"));
         assertEquals(transactionRepository.findAll().size(),2);
         //Current Balances CA1: 1500, CA2:1500 ; minimumBalance: 250
-        Utils.transactMoney(CA_1,CA_2,transactionRepository,transactionPartnersRepository,new BigDecimal("1250"));
+        Utils.transactMoney(accountRepository,CA_1,CA_2,transactionRepository,transactionPartnersRepository,new BigDecimal("1250"));
         assertEquals(CA_1.getBalance(),new BigDecimal("250"));
         assertEquals(CA_2.getBalance(),new BigDecimal("2750"));
         assertEquals(transactionRepository.findAll().size(),3);
         //Current Balances CA1: 250, CA2:2750 ; minimumBalance: 250
-        Utils.transactMoney(CA_1,CA_2,transactionRepository,transactionPartnersRepository,new BigDecimal("50"));
+        Utils.transactMoney(accountRepository,CA_1,CA_2,transactionRepository,transactionPartnersRepository,new BigDecimal("50"));
         assertEquals(CA_1.getBalance(),new BigDecimal("160"));
         assertEquals(CA_2.getBalance(),new BigDecimal("2800"));
         assertEquals(transactionRepository.findAll().size(),4);
         //Current Balances CA1: 160, CA2:2800 ; minimumBalance: 250
-        Utils.transactMoney(CA_2,CA_1,transactionRepository,transactionPartnersRepository,new BigDecimal("2000"));
+        Utils.transactMoney(accountRepository,CA_2,CA_1,transactionRepository,transactionPartnersRepository,new BigDecimal("2000"));
         assertEquals(CA_1.getBalance(),new BigDecimal("2160"));
         assertEquals(CA_2.getBalance(),new BigDecimal("800"));
         assertEquals(transactionRepository.findAll().size(),5);
         //Current Balances CA1: 2160, CA2:800 ; minimumBalance: 250
         Exception exception = assertThrows(Exception.class, () -> {
-            Utils.transactMoney(CA_2,CA_1,transactionRepository,transactionPartnersRepository,new BigDecimal("1000"));
+            Utils.transactMoney(accountRepository,CA_2,CA_1,transactionRepository,transactionPartnersRepository,new BigDecimal("1000"));
         });
 
         assertTrue(exception.getMessage().contains("The balance of this account would drop below 0! Transaction denied."));
         assertEquals(transactionRepository.findAll().size(),5);
 
+
+    }
+
+    @Test
+    public void testFraudDetectionSQL() throws Exception {
+        //Get MaxTransactionAmount per Day
+        LocalDateTime currentTime =LocalDateTime.now();
+        Utils.transactMoney(accountRepository,CA_1,CA_2,transactionRepository,transactionPartnersRepository,new BigDecimal("500"));
+        List<Object[]> objList = transactionRepository.getMaxTransactionAmountPerDay(a1.getId());
+        assertEquals(objList.get(0)[0],new BigDecimal("2500.00"));
+
+        //Get SumTransactionAmount For this day
+        LocalDate today = LocalDateTime.now().toLocalDate();
+
+        List<Object[]> objList1 = transactionRepository.getSumTransactionAmountForThisDay(a1.getId(),today);
+        assertEquals(objList1.get(0)[1],new BigDecimal("2500.00"));
+
+        //Get last TimeStamp
+        List<Object[]> objList2 = transactionRepository.getLastTimeStampOfTransactions(CA_1.getId());
+        Object dateTimeObject = objList2.get(0)[0];
+        LocalDateTime l1 = LocalDateTime.parse(dateTimeObject.toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
+        assertEquals(l1.withNano(0),currentTime.withNano(0));
 
     }
 

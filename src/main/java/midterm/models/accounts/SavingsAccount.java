@@ -1,5 +1,6 @@
 package midterm.models.accounts;
 
+import midterm.models.enums.Period;
 import midterm.models.enums.Status;
 import midterm.models.users.AccountHolder;
 
@@ -105,5 +106,26 @@ public class SavingsAccount extends Account {
     public void changeBalance(BigDecimal valueToChange) throws Exception{
         setBalance(getBalance().add(valueToChange));
     }
+
+    @Override
+    public void setCreationDate(LocalDateTime creationDate){
+        super.setCreationDate(creationDate);
+        super.setInterestRatePaymentDate(creationDate.plusYears(1));
+    }
+
+    @Override
+    public BigDecimal getBalance() throws Exception{
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime lastInterestPaymentDate = this.getInterestRatePaymentDate();
+        //Check if there needs to be one or more interest payments
+        if(lastInterestPaymentDate.isBefore(currentTime)) {
+            int years = (int) java.time.temporal.ChronoUnit.YEARS.between(lastInterestPaymentDate, currentTime);
+            BigDecimal factor = (new BigDecimal("1").add(getInterestRate().divide(new BigDecimal("100")))).pow(years+1);
+            super.setBalance(super.getBalance().multiply(factor));
+            super.setNextInterestRatePaymentDate(Period.YEARLY,years+1);
+        }
+        return super.getBalance();
+    }
+
 
 }
