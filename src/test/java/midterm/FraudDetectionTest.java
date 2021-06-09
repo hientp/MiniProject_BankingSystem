@@ -2,6 +2,7 @@ package midterm;
 
 import midterm.Utils;
 import midterm.models.*;
+import midterm.models.accounts.Account;
 import midterm.models.accounts.CheckingAccount;
 import midterm.models.accounts.CreditCard;
 import midterm.models.accounts.SavingsAccount;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @SpringBootTest
@@ -93,9 +95,9 @@ class FraudDetectionTest {
         //CA_1 3000
         //Send 20€ each hour and receive each 100th hour 3000€
         for (int i=0; i<500; i++) {
-            Utils.transactMoneySecured(historyStart.plusHours(i), accountRepository, CA_2, CA_1, transactionRepository, transactionPartnersRepository, new BigDecimal("20"));
+            Utils.transactMoney(historyStart.plusHours(i), accountRepository, CA_2, CA_1, transactionRepository, transactionPartnersRepository, new BigDecimal("20"));
             if(i % 100 == 0){
-                Utils.transactMoneySecured(accountRepository, CA_1, CA_2, transactionRepository, transactionPartnersRepository, new BigDecimal("3000"));
+                Utils.transactMoney(accountRepository, CA_1, CA_2, transactionRepository, transactionPartnersRepository, new BigDecimal("3000"));
             }
             System.out.println(i+": "+CA_2.getBalance());
         }
@@ -103,9 +105,40 @@ class FraudDetectionTest {
     }
 
     @Test
-    public void testTest(){
+    public void testAmountFraud() throws Exception {
+        //Max amount 480=20*24 --> 1.5 = 480+240=720
+        Utils.transactMoneySecured(LocalDateTime.now(), accountRepository, CA_2, CA_1, transactionRepository, transactionPartnersRepository, new BigDecimal("720"));
+        List<Transaction> transactionList = transactionRepository.findAll();
+        assertEquals(transactionList.get(transactionList.size()-1).getAmount(),new BigDecimal("720.00"));
+        assertEquals(CA_2.getStatus(),Status.ACTIVE);
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            Utils.transactMoneySecured(LocalDateTime.now(), accountRepository,CA_2,CA_1,transactionRepository,transactionPartnersRepository,new BigDecimal("1"));
+        });
+
+        assertTrue(exception.getMessage().contains("Suspicious behaviour was detected. Account was frozen. Please contact your banking advisor."));
+        assertEquals(CA_2.getStatus(),Status.FROZEN);
+
+        exception = assertThrows(Exception.class, () -> {
+            Utils.transactMoneySecured(LocalDateTime.now(), accountRepository,CA_2,CA_1,transactionRepository,transactionPartnersRepository,new BigDecimal("1"));
+        });
+        assertTrue(exception.getMessage().contains("Account is frozen. Please contact your banking advisor."));
 
     }
+
+    @Test
+    public void testSameSecond() throws Exception {
+        LocalDateTime testTime= LocalDateTime.now();
+        Utils.transactMoneySecured(testTime, accountRepository, CA_3, CA_1, transactionRepository, transactionPartnersRepository, new BigDecimal("2"));
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            Utils.transactMoneySecured(testTime, accountRepository,CA_3,CA_1,transactionRepository,transactionPartnersRepository,new BigDecimal("2"));
+        });
+
+        assertTrue(exception.getMessage().contains("Suspicious behaviour was detected. Account was frozen. Please contact your banking advisor."));
+        assertEquals(CA_2.getStatus(),Status.FROZEN);
+    }
+
 
 
 }

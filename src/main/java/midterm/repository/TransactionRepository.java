@@ -38,8 +38,9 @@ public interface TransactionRepository extends JpaRepository<Transaction,Integer
             "ON acc.id=tp.account_id)) t1 \n" +
             "LEFT JOIN transaction t2\n" +
             "ON t1.transaction_id=t2.id) all_transactions\n" +
+            "where day1!=:thisDay\n" +
             "Group By day1) amount_per_day", nativeQuery = true)
-    List<Object[]> getMaxTransactionAmountPerDay(@Param("user_id") Integer user_id);
+    List<Object[]> getMaxTransactionAmountPerDay(@Param("user_id") Integer user_id, @Param("thisDay") LocalDate thisDay);
 
     @Query(value = "Select day1, sum(amount) as amount_per_day\n" +
             "FROM\n" +

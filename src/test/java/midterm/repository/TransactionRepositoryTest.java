@@ -20,6 +20,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -139,12 +141,11 @@ class TransactionRepositoryTest {
     public void testFraudDetectionSQL() throws Exception {
         //Get MaxTransactionAmount per Day
         LocalDateTime currentTime =LocalDateTime.now();
-        Utils.transactMoney(accountRepository,CA_1,CA_2,transactionRepository,transactionPartnersRepository,new BigDecimal("500"));
-        List<Object[]> objList = transactionRepository.getMaxTransactionAmountPerDay(a1.getId());
-        assertEquals(objList.get(0)[0],new BigDecimal("2500.00"));
-
         //Get SumTransactionAmount For this day
         LocalDate today = LocalDateTime.now().toLocalDate();
+        Utils.transactMoney(accountRepository,CA_1,CA_2,transactionRepository,transactionPartnersRepository,new BigDecimal("500"));
+        List<Object[]> objList = transactionRepository.getMaxTransactionAmountPerDay(a1.getId(),today.plusDays(1));
+        assertEquals(objList.get(0)[0],new BigDecimal("2500.00"));
 
         List<Object[]> objList1 = transactionRepository.getSumTransactionAmountForThisDay(a1.getId(),today);
         assertEquals(objList1.get(0)[1],new BigDecimal("2500.00"));
@@ -152,7 +153,15 @@ class TransactionRepositoryTest {
         //Get last TimeStamp
         List<Object[]> objList2 = transactionRepository.getLastTimeStampOfTransactions(CA_1.getId());
         Object dateTimeObject = objList2.get(0)[0];
-        LocalDateTime l1 = LocalDateTime.parse(dateTimeObject.toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
+        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                // date / time
+                .appendPattern("yyyy-MM-dd HH:mm:ss")
+                // nanoseconds, with minimum 1 and maximum 9 digits and a decimal point
+                .appendFraction(ChronoField.NANO_OF_SECOND, 1, 9, true)
+                // create formatter
+                .toFormatter();
+        LocalDateTime dateTime= LocalDateTime.parse(dateTimeObject.toString(), formatter);
+        LocalDateTime l1 = LocalDateTime.parse(dateTimeObject.toString(), formatter);
         assertEquals(l1.withNano(0),currentTime.withNano(0));
 
     }

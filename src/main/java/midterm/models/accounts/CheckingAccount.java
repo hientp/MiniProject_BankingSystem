@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Table(name = "checking_account")
 public class CheckingAccount extends Account {
     private BigDecimal minimumBalance = new BigDecimal("250");
-    //FIXME the monthly maintenance fee needs to be deducted
     private BigDecimal monthlyMaintenanceFee= new BigDecimal("12");
     private BigDecimal interestRate= new BigDecimal("0");
 

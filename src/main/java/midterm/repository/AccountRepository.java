@@ -2,6 +2,7 @@ package midterm.repository;
 
 
 import midterm.models.accounts.Account;
+import midterm.models.accounts.CheckingAccount;
 import midterm.models.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,6 +12,14 @@ import java.util.List;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account,Integer> {
+
+
+//    @Query(value = "from CheckingAccount where primaryOwner=:primaryOwnerId")
+//    List<CheckingAccount> findCheckingAccountByPrimaryOwnerID(Integer primaryOwnerId);
+
+    @Query(value = "from CheckingAccount")
+    List<CheckingAccount> findAllCheckingAccounts();
+
 
     @Query(value = "select primary_owner_id \n" +
                     "from \n" +

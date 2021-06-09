@@ -20,6 +20,8 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +41,7 @@ public class Utils {
                 if (isFraud) {
                     if(Sender instanceof CheckingAccount){((CheckingAccount) Sender).setStatus(Status.FROZEN);}
                     if(Sender instanceof SavingsAccount){((SavingsAccount) Sender).setStatus(Status.FROZEN);}
+                    accountRepository.save(Sender);
                     throw new Exception("Suspicious behaviour was detected. Account was frozen. Please contact your banking advisor.");
                 }
             }
@@ -88,7 +91,7 @@ public class Utils {
     //Function for detecting if amounts of the day would exceed 150% of max value
     public static Boolean fraudDetectionMaxDailyAmount(LocalDateTime TimeStamp,AccountRepository accountRepository,Account Sender,TransactionRepository transactionRepository, BigDecimal amount) throws Exception{
         Integer userId= accountRepository.getPrimaryOwnerIdById(Sender.getId());
-        List<Object[]> objList = transactionRepository.getMaxTransactionAmountPerDay(userId);
+        List<Object[]> objList = transactionRepository.getMaxTransactionAmountPerDay(userId, TimeStamp.toLocalDate());
         List<Object[]> objList2 = transactionRepository.getSumTransactionAmountForThisDay(userId, TimeStamp.toLocalDate());
         if(objList.get(0)==null){
             return Boolean.FALSE;
@@ -98,7 +101,7 @@ public class Utils {
             if(objList2.isEmpty()) {
                 cumAmount=new BigDecimal("0");
             } else {
-                cumAmount= (BigDecimal) objList2.get(0)[1];
+                cumAmount= ((BigDecimal) objList2.get(0)[1]).add(amount);
             }
             if(cumAmount.compareTo(maxValue.multiply(new BigDecimal("1.5")))>0){
                 return Boolean.TRUE;
@@ -114,8 +117,15 @@ public class Utils {
             return Boolean.FALSE;
         } else {
             Object dateTimeObject=objList.get(0)[0];
-            LocalDateTime dateTime= LocalDateTime.parse(dateTimeObject.toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
-            if(TimeStamp.withNano(0)==dateTime.withNano(0)) {
+            DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                    // date / time
+                    .appendPattern("yyyy-MM-dd HH:mm:ss")
+                    // nanoseconds, with minimum 1 and maximum 9 digits and a decimal point
+                    .appendFraction(ChronoField.NANO_OF_SECOND, 1, 9, true)
+                    // create formatter
+                    .toFormatter();
+            LocalDateTime dateTime= LocalDateTime.parse(dateTimeObject.toString(), formatter);
+            if(TimeStamp.withNano(0).equals(dateTime.withNano(0))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;

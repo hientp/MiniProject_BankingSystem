@@ -35,7 +35,6 @@ public abstract class Account {
     private LocalDateTime interestRatePaymentDate;
     @NotNull
     private BigDecimal balance;
-    //FIXME CheckingAccount and SavingsAccounts can't have a balance below 0?! CreditCard can't have a balance below their creditLimit?!
     @NotNull @NotEmpty
     private String secretKey;
     private BigDecimal interestRate;
