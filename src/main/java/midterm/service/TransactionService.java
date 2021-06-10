@@ -17,6 +17,7 @@ import midterm.repository.TransactionRepository;
 import midterm.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -39,29 +40,34 @@ public class TransactionService {
     @Autowired
     UserRepository userRepository;
 
-    public Transaction transferMoney(TransactionDTO transactionDTO) {
-        try {
+    public ResponseEntity<Transaction> transferMoney(TransactionDTO transactionDTO) {
             BigDecimal amount = transactionDTO.getAmount();
             Integer sender_id = transactionDTO.getSenderAccountId();
             Integer receiver_id = transactionDTO.getReceiverAccountId();
-            Account sender = findAccountById(sender_id,accountRepository);
-            Account receiver = findAccountById(receiver_id,accountRepository);
-            return transactMoneySecured(accountRepository,sender,receiver,transactionRepository,transactionPartnersRepository,amount);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Test");
-        }
+            ResponseEntity<Account> sender = findAccountById(sender_id,accountRepository);
+            ResponseEntity<Account> receiver = findAccountById(receiver_id,accountRepository);
+            return transactMoneySecured(accountRepository,sender.getBody(),receiver.getBody(),transactionRepository,transactionPartnersRepository,amount);
     }
 
     //Function to find account by id
-    public Account findAccountById(Integer id,AccountRepository accountRepository) throws Exception {
-        if(accountRepository.findCheckingAccountbyId(id) != null){return accountRepository.findCheckingAccountbyId(id);}
-        if(accountRepository.findSavingsAccountbyId(id) != null){return accountRepository.findSavingsAccountbyId(id);}
-        if(accountRepository.findCreditCardbyId(id) != null){return accountRepository.findCreditCardbyId(id);}
-        else { throw new Exception("Id not found!");}
+    public ResponseEntity<Account> findAccountById(Integer id,AccountRepository accountRepository) {
+            if (accountRepository.findCheckingAccountbyId(id) != null) {
+                return new ResponseEntity<Account>(accountRepository.findCheckingAccountbyId(id), HttpStatus.OK);
+            } else {
+                if (accountRepository.findSavingsAccountbyId(id) != null) {
+                    return new ResponseEntity<Account>(accountRepository.findSavingsAccountbyId(id), HttpStatus.OK);
+                } else {
+                    if (accountRepository.findSavingsAccountbyId(id) != null) {
+                        return new ResponseEntity<Account>(accountRepository.findCreditCardbyId(id), HttpStatus.OK);
+                    }  else {
+                        throw new RuntimeException("Id not found!");
+                    }
+                }
+            }
     }
 
     //Function to transact money with fraud detection activated and with given timestamp
-    public Transaction transactMoneySecured(LocalDateTime TimeStamp, AccountRepository accountRepository, Account Sender, Account Receiver, TransactionRepository transactionRepository, TransactionPartnersRepository transactionPartnersRepository, BigDecimal amount) throws Exception {
+    public ResponseEntity<Transaction> transactMoneySecured(LocalDateTime TimeStamp, AccountRepository accountRepository, Account Sender, Account Receiver, TransactionRepository transactionRepository, TransactionPartnersRepository transactionPartnersRepository, BigDecimal amount)  {
         //Check if status is active
         Status status = Status.ACTIVE;
         if(Sender instanceof CheckingAccount){status=((CheckingAccount) Sender).getStatus();}
@@ -75,44 +81,44 @@ public class TransactionService {
                     if(Sender instanceof CheckingAccount){((CheckingAccount) Sender).setStatus(Status.FROZEN);}
                     if(Sender instanceof SavingsAccount){((SavingsAccount) Sender).setStatus(Status.FROZEN);}
                     accountRepository.save(Sender);
-                    throw new Exception("Suspicious behaviour was detected. Account was frozen. Please contact your banking advisor.");
+                    throw new RuntimeException("Suspicious behaviour was detected. Account was frozen. Please contact your banking advisor.");
                 }
             }
             //Money from credit card can be transacted without fraud detection
             return transactMoney(TimeStamp,accountRepository,Sender,Receiver,transactionRepository,transactionPartnersRepository,amount);
         } else {
-            throw new Exception("Account is frozen. Please contact your banking advisor.");
+            throw new RuntimeException("Account is frozen. Please contact your banking advisor.");
         }
     }
 
     //Function to transact money with fraud detection and no given timestamp
-    public Transaction transactMoneySecured(AccountRepository accountRepository, Account Sender, Account Receiver, TransactionRepository transactionRepository, TransactionPartnersRepository transactionPartnersRepository, BigDecimal amount) throws Exception {
+    public ResponseEntity<Transaction> transactMoneySecured(AccountRepository accountRepository, Account Sender, Account Receiver, TransactionRepository transactionRepository, TransactionPartnersRepository transactionPartnersRepository, BigDecimal amount) {
         return transactMoneySecured(LocalDateTime.now(), accountRepository,Sender,Receiver,transactionRepository,transactionPartnersRepository,amount);
     }
 
     //Function to transact Money with given timestamp
-    public Transaction transactMoney(LocalDateTime TimeStamp, AccountRepository accountRepository, Account Sender, Account Receiver, TransactionRepository transactionRepository, TransactionPartnersRepository transactionPartnersRepository, BigDecimal amount) throws Exception {
+    public ResponseEntity<Transaction> transactMoney(LocalDateTime TimeStamp, AccountRepository accountRepository, Account Sender, Account Receiver, TransactionRepository transactionRepository, TransactionPartnersRepository transactionPartnersRepository, BigDecimal amount)  {
         //Check if sender has enough money on account
         Sender.changeBalance(amount.multiply(new BigDecimal("-1")));
         accountRepository.save(Sender);
         Receiver.changeBalance(amount);
         accountRepository.save(Receiver);
-        Transaction newTransaction = new Transaction(TimeStamp, amount);
-        TransactionPartners newTransactionPartner1 = new TransactionPartners(Sender, newTransaction, Alignment.SENDER);
-        TransactionPartners newTransactionPartner2 = new TransactionPartners(Receiver, newTransaction, Alignment.RECEIVER);
-        transactionRepository.save(newTransaction);
+        ResponseEntity<Transaction> newTransaction = ResponseEntity.accepted().body(new Transaction(TimeStamp, amount));
+        TransactionPartners newTransactionPartner1 = new TransactionPartners(Sender, newTransaction.getBody(), Alignment.SENDER);
+        TransactionPartners newTransactionPartner2 = new TransactionPartners(Receiver, newTransaction.getBody(), Alignment.RECEIVER);
+        transactionRepository.save(newTransaction.getBody());
         transactionPartnersRepository.save(newTransactionPartner1);
         transactionPartnersRepository.save(newTransactionPartner2);
         return newTransaction;
     }
 
     //Function to transact Money without given timestamp
-    public Transaction transactMoney(AccountRepository accountRepository, Account Sender, Account Receiver, TransactionRepository transactionRepository, TransactionPartnersRepository transactionPartnersRepository, BigDecimal amount) throws Exception {
+    public ResponseEntity<Transaction> transactMoney(AccountRepository accountRepository, Account Sender, Account Receiver, TransactionRepository transactionRepository, TransactionPartnersRepository transactionPartnersRepository, BigDecimal amount) {
         return transactMoney(LocalDateTime.now(),accountRepository,Sender,Receiver,transactionRepository,transactionPartnersRepository,amount);
     }
 
     //Functions for fraud detection with given TimeStamp
-    public Boolean fraudDetection(LocalDateTime TimeStamp,AccountRepository accountRepository,Account Sender, TransactionRepository transactionRepository, BigDecimal amount) throws Exception{
+    public Boolean fraudDetection(LocalDateTime TimeStamp,AccountRepository accountRepository,Account Sender, TransactionRepository transactionRepository, BigDecimal amount) {
         if(fraudDetectionMaxDailyAmount(TimeStamp,accountRepository,Sender, transactionRepository,amount)){
             return Boolean.TRUE;
         }
@@ -123,7 +129,7 @@ public class TransactionService {
     }
 
     //Function for detecting if amounts of the day would exceed 150% of max value
-    public Boolean fraudDetectionMaxDailyAmount(LocalDateTime TimeStamp,AccountRepository accountRepository,Account Sender,TransactionRepository transactionRepository, BigDecimal amount) throws Exception{
+    public Boolean fraudDetectionMaxDailyAmount(LocalDateTime TimeStamp,AccountRepository accountRepository,Account Sender,TransactionRepository transactionRepository, BigDecimal amount) {
         Integer userId= accountRepository.getPrimaryOwnerIdById(Sender.getId());
         List<Object[]> objList = transactionRepository.getMaxTransactionAmountPerDay(userId, TimeStamp.toLocalDate());
         List<Object[]> objList2 = transactionRepository.getSumTransactionAmountForThisDay(userId, TimeStamp.toLocalDate());

@@ -14,6 +14,7 @@ import midterm.models.enums.Status;
 import midterm.models.users.AccountHolder;
 import midterm.repository.*;
 import midterm.service.TransactionService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -32,7 +33,9 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -131,7 +134,7 @@ class TransactionControllerTest {
         ResultActions checkMock =mockMvc.perform(post("/banking/transferMoney/")
                 .content(jsonString)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isAccepted());
 
         transactionDTO = new TransactionDTO();
         transactionDTO.setAmount(new BigDecimal("1"));
@@ -139,10 +142,18 @@ class TransactionControllerTest {
         transactionDTO.setReceiverAccountId(2);
 
         jsonString = objectMapper.writeValueAsString(transactionDTO);
-        checkMock =mockMvc.perform(post("/banking/transferMoney/")
+
+        mockMvc.perform(post("/banking/transferMoney/")
                 .content(jsonString)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(Matchers.containsString("Suspicious behaviour was detected. Account was frozen. Please contact your banking advisor.")));
+
+        mockMvc.perform(post("/banking/transferMoney/")
+                .content(jsonString)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(Matchers.containsString("Account is frozen. Please contact your banking advisor.")));
 
     }
 }

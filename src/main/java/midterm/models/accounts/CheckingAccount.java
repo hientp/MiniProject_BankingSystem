@@ -100,7 +100,7 @@ public class CheckingAccount extends Account {
     @Override
     //If balance drops below minimumBalance then the penaltyFee is automatically deducted
     //Balance can't drop below zero
-    public void setBalance(BigDecimal newBalance) throws Exception{
+    public void setBalance(BigDecimal newBalance) throws RuntimeException{
         //Check if newBalance would be greater or equal zero
         if(newBalance.compareTo(new BigDecimal("0"))>=0){
             //Check if minimumBalance is reached
@@ -121,12 +121,12 @@ public class CheckingAccount extends Account {
                 }
             }
         } else {
-            throw new Exception("The balance of this account would drop below 0! Transaction denied.");
+            throw new RuntimeException("The balance of this account would drop below 0! Transaction denied.");
         }
     }
 
     @Override
-    public void changeBalance(BigDecimal valueToChange) throws Exception{
+    public void changeBalance(BigDecimal valueToChange) throws RuntimeException{
         setBalance(getBalance().add(valueToChange));
     }
 
@@ -138,7 +138,7 @@ public class CheckingAccount extends Account {
     }
 
     @Override
-    public BigDecimal getBalance() throws Exception{
+    public BigDecimal getBalance() throws RuntimeException{
         LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime lastInterestPaymentDate = this.getInterestRatePaymentDate();
         //Check if monthlyMaintenanceFee needs to be deducted

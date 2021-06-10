@@ -93,11 +93,11 @@ public abstract class Account {
         this.interestRatePaymentDate = interestRatePaymentDate;
     }
 
-    public BigDecimal getBalance() throws Exception {
+    public BigDecimal getBalance() throws RuntimeException {
         return balance;
     }
 
-    public void setBalance(BigDecimal balance) throws Exception {
+    public void setBalance(BigDecimal balance) throws RuntimeException {
             this.balance = balance;
     }
 
@@ -151,7 +151,7 @@ public abstract class Account {
         }
     }
 
-    public void changeBalance(BigDecimal valueToChange) throws Exception{
+    public void changeBalance(BigDecimal valueToChange) throws RuntimeException{
         setBalance(getBalance().add(valueToChange));
     }
 

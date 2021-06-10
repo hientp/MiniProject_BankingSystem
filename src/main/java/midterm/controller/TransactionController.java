@@ -14,6 +14,7 @@ import midterm.service.TestData;
 import midterm.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -37,7 +38,7 @@ public class TransactionController {
     //Anlegen von neuem checkingAccount
     @PostMapping("/banking/transferMoney/")
     @ResponseStatus(HttpStatus.CREATED)
-    public Transaction transferMoney(@RequestBody @Valid TransactionDTO transactionDTO) {
+    public ResponseEntity<Transaction> transferMoney(@RequestBody @Valid TransactionDTO transactionDTO) {
         return transactionService.transferMoney(transactionDTO);
     }
 

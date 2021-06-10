@@ -65,16 +65,16 @@ public class CreditCard extends Account {
     }
 
     @Override
-    public void setBalance(BigDecimal balance) throws Exception {
+    public void setBalance(BigDecimal balance) throws RuntimeException {
         if(balance.compareTo(this.getCreditLimit().multiply(new BigDecimal("-1")))<0){
-            throw new Exception("The credit limit for this account is "+ this.getCreditLimit()+" ! It is not allowed that the balance exceeds the limit!");
+            throw new RuntimeException("The credit limit for this account is "+ this.getCreditLimit()+" ! It is not allowed that the balance exceeds the limit!");
         } else {
             super.setBalance(balance);
         }
     }
 
     @Override
-    public void changeBalance(BigDecimal valueToChange) throws Exception{
+    public void changeBalance(BigDecimal valueToChange) throws RuntimeException{
         setBalance(getBalance().add(valueToChange));
     }
 
@@ -85,7 +85,7 @@ public class CreditCard extends Account {
     }
 
     @Override
-    public BigDecimal getBalance() throws Exception{
+    public BigDecimal getBalance() throws RuntimeException{
         LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime lastInterestPaymentDate = this.getInterestRatePaymentDate();
         //Check if there needs to be one or more interest payments
