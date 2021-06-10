@@ -3,6 +3,7 @@ package midterm.models.accounts;
 import midterm.models.enums.Period;
 import midterm.models.enums.Status;
 import midterm.models.users.AccountHolder;
+import midterm.models.users.FirstPartyUser;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -29,7 +30,7 @@ public class CheckingAccount extends Account {
         setDateOfNextMaintenanceFee(getCreationDate().toLocalDate().plusMonths(1));
     }
 
-    public CheckingAccount(BigDecimal balance, String secretKey, AccountHolder primaryOwner, AccountHolder secondaryOwner, Status status) throws Exception{
+    public CheckingAccount(BigDecimal balance, String secretKey, FirstPartyUser primaryOwner, FirstPartyUser secondaryOwner, Status status) throws Exception{
         super(balance, secretKey, primaryOwner, secondaryOwner, new BigDecimal("0"));
         setInterestRatePaymentDate(getCreationDate().plusYears(1));
         setDateOfNextMaintenanceFee(getCreationDate().toLocalDate().plusMonths(1));
@@ -40,7 +41,7 @@ public class CheckingAccount extends Account {
         this.status = status;
     }
 
-    public CheckingAccount(Integer id, LocalDateTime creationDate, LocalDateTime nextDateForInterestPayment, BigDecimal balance, String secretKey, AccountHolder primaryOwner, AccountHolder secondaryOwner,  Status status) throws Exception{
+    public CheckingAccount(Integer id, LocalDateTime creationDate, LocalDateTime nextDateForInterestPayment, BigDecimal balance, String secretKey, FirstPartyUser primaryOwner, FirstPartyUser secondaryOwner,  Status status) throws Exception{
         super(id, creationDate, nextDateForInterestPayment, balance, secretKey, primaryOwner, secondaryOwner, new BigDecimal("0")); //test
         setInterestRate(interestRate);
         setBalance(balance);

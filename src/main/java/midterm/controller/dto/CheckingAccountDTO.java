@@ -13,9 +13,9 @@ import java.util.List;
 public class CheckingAccountDTO {
 
     @NotNull(message = "You must supply a primary Owner!")
-    private AccountHolder primaryOwner;
+    private Integer primaryOwnerId;
 
-    private AccountHolder secondaryOwner;
+    private Integer secondaryOwnerId;
     private LocalDateTime creationDate;
 
     @NotNull
@@ -26,28 +26,28 @@ public class CheckingAccountDTO {
     public CheckingAccountDTO() {
     }
 
-    public CheckingAccountDTO(AccountHolder primaryOwner, AccountHolder secondaryOwner, LocalDateTime creationDate, BigDecimal balance, String secretKey) {
-        this.primaryOwner = primaryOwner;
-        this.secondaryOwner = secondaryOwner;
+    public CheckingAccountDTO(Integer primaryOwnerId, Integer secondaryOwnerId, LocalDateTime creationDate, BigDecimal balance, String secretKey) {
+        this.primaryOwnerId = primaryOwnerId;
+        this.secondaryOwnerId = secondaryOwnerId;
         this.creationDate = creationDate;
         this.balance = balance;
         this.secretKey = secretKey;
     }
 
-    public AccountHolder getPrimaryOwner() {
-        return primaryOwner;
+    public Integer getPrimaryOwnerId() {
+        return primaryOwnerId;
     }
 
-    public void setPrimaryOwner(AccountHolder primaryOwner) {
-        this.primaryOwner = primaryOwner;
+    public void setPrimaryOwner(Integer primaryOwnerId) {
+        this.primaryOwnerId = primaryOwnerId;
     }
 
-    public AccountHolder getSecondaryOwner() {
-        return secondaryOwner;
+    public Integer getSecondaryOwnerId() {
+        return secondaryOwnerId;
     }
 
-    public void setSecondaryOwner(AccountHolder secondaryOwner) {
-        this.secondaryOwner = secondaryOwner;
+    public void setSecondaryOwner(Integer secondaryOwnerId) {
+        this.secondaryOwnerId = secondaryOwnerId;
     }
 
     public LocalDateTime getCreationDate() {

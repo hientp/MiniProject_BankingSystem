@@ -15,9 +15,20 @@ public class BankingApplication {
     //a) Generate TestData
     //http://localhost:8080/banking/testData/
     //b) Get Account Information for a user
-    //All CheckingAccounts
-    //http://localhost:8080/banking/checking_accounts
-    //
+    //All CheckingAccounts, SavingsAccounts, CreditCards
+    //http://localhost:8080/banking/checking_accounts/
+    //http://localhost:8080/banking/savings_accounts/
+    //http://localhost:8080/banking/credit_cards/
+    //Create new account
+
+
+
+    //Example Checking_Account:
+
+
+
+    //Check balance of all accounts
+    //http://localhost:8080/banking/account_balance/{id}
 
 
 }

@@ -3,6 +3,7 @@ package midterm.models.accounts;
 import midterm.models.enums.Period;
 import midterm.models.enums.Status;
 import midterm.models.users.AccountHolder;
+import midterm.models.users.FirstPartyUser;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -33,7 +34,7 @@ public class SavingsAccount extends Account {
         setInterestRatePaymentDate(getCreationDate().plusYears(1));
     }
 
-    public SavingsAccount(BigDecimal balance, String secretKey, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal interestRate, BigDecimal minimumBalance,  Status status) throws Exception{
+    public SavingsAccount(BigDecimal balance, String secretKey, FirstPartyUser primaryOwner, FirstPartyUser secondaryOwner, BigDecimal interestRate, BigDecimal minimumBalance, Status status) throws Exception{
         super(balance, secretKey, primaryOwner, secondaryOwner, interestRate);
         setInterestRatePaymentDate(getCreationDate().plusYears(1));
         setInterestRate(interestRate);
@@ -42,7 +43,7 @@ public class SavingsAccount extends Account {
         this.status = status;
     }
 
-    public SavingsAccount(Integer id, LocalDateTime creationDate, LocalDateTime nextDateForInterestPayment, BigDecimal balance, String secretKey, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal interestRate, BigDecimal minimumBalance,  Status status) throws Exception{
+    public SavingsAccount(Integer id, LocalDateTime creationDate, LocalDateTime nextDateForInterestPayment, BigDecimal balance, String secretKey, FirstPartyUser primaryOwner, FirstPartyUser secondaryOwner, BigDecimal interestRate, BigDecimal minimumBalance,  Status status) throws Exception{
         super(id, creationDate, nextDateForInterestPayment, balance, secretKey, primaryOwner, secondaryOwner, interestRate);
         setInterestRatePaymentDate(getCreationDate().plusYears(1));
         setInterestRate(interestRate);

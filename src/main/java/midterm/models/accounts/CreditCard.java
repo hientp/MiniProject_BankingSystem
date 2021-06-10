@@ -2,6 +2,7 @@ package midterm.models.accounts;
 
 import midterm.models.enums.Period;
 import midterm.models.users.AccountHolder;
+import midterm.models.users.FirstPartyUser;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -30,7 +31,7 @@ public class CreditCard extends Account {
         setInterestRatePaymentDate(getCreationDate().plusMonths(1));
     }
 
-    public CreditCard(BigDecimal balance, String secretKey, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal interestRate,BigDecimal creditLimit) throws Exception {
+    public CreditCard(BigDecimal balance, String secretKey, FirstPartyUser primaryOwner, FirstPartyUser secondaryOwner, BigDecimal interestRate, BigDecimal creditLimit) throws Exception {
         super(balance, secretKey, primaryOwner, secondaryOwner, interestRate);
         setInterestRatePaymentDate(getCreationDate().plusMonths(1));
         setInterestRate(interestRate);
@@ -38,7 +39,7 @@ public class CreditCard extends Account {
         this.creditLimit = creditLimit;
     }
 
-    public CreditCard(Integer id, LocalDateTime creationDate, LocalDateTime nextDateForInterestPayment, BigDecimal balance, String secretKey, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal interestRate, BigDecimal creditLimit) throws Exception{
+    public CreditCard(Integer id, LocalDateTime creationDate, LocalDateTime nextDateForInterestPayment, BigDecimal balance, String secretKey, FirstPartyUser primaryOwner, FirstPartyUser secondaryOwner, BigDecimal interestRate, BigDecimal creditLimit) throws Exception{
         super(id, creationDate, nextDateForInterestPayment, balance, secretKey, primaryOwner, secondaryOwner, interestRate);
         setInterestRate(interestRate);
         setBalance(balance);

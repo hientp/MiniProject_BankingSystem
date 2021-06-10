@@ -5,6 +5,7 @@ import midterm.models.Address;
 import midterm.models.TransactionPartners;
 import midterm.models.enums.Period;
 import midterm.models.users.AccountHolder;
+import midterm.models.users.FirstPartyUser;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -23,11 +24,11 @@ public abstract class Account {
     @ManyToOne
     @JoinColumn(name = "primary_owner_id")
     @NotNull(message = "You must supply a primary Owner!")
-    private AccountHolder primaryOwner;
+    private FirstPartyUser primaryOwner;
 
     @ManyToOne
     @JoinColumn(name = "secondary_owner_id")
-    private AccountHolder secondaryOwner;
+    private FirstPartyUser secondaryOwner;
 
     @OneToMany(mappedBy="account")
     @JsonIgnore
@@ -46,7 +47,7 @@ public abstract class Account {
      this.creationDate= LocalDateTime.now();
     }
 
-    public Account(BigDecimal balance, String secretKey, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal interestRate) throws Exception{
+    public Account(BigDecimal balance, String secretKey, FirstPartyUser primaryOwner, FirstPartyUser secondaryOwner, BigDecimal interestRate) throws Exception{
         this.creationDate= LocalDateTime.now();
         this.balance=balance;
         this.secretKey = secretKey;
@@ -55,7 +56,7 @@ public abstract class Account {
         setInterestRate(interestRate);
     }
 
-    public Account(Integer id, LocalDateTime creationDate, LocalDateTime interestRatePaymentDate, BigDecimal balance, String secretKey, AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal interestRate) throws Exception{
+    public Account(Integer id, LocalDateTime creationDate, LocalDateTime interestRatePaymentDate, BigDecimal balance, String secretKey, FirstPartyUser primaryOwner, FirstPartyUser secondaryOwner, BigDecimal interestRate) throws Exception{
         this.id = id;
         this.creationDate = creationDate;
         this.interestRatePaymentDate = interestRatePaymentDate;
@@ -108,19 +109,19 @@ public abstract class Account {
         this.secretKey = secretKey;
     }
 
-    public AccountHolder getPrimaryOwner() {
+    public FirstPartyUser getPrimaryOwner() {
         return primaryOwner;
     }
 
-    public void setPrimaryOwner(AccountHolder primaryOwner) {
+    public void setPrimaryOwner(FirstPartyUser primaryOwner) {
         this.primaryOwner = primaryOwner;
     }
 
-    public AccountHolder getSecondaryOwner() {
+    public FirstPartyUser getSecondaryOwner() {
         return secondaryOwner;
     }
 
-    public void setSecondaryOwner(AccountHolder secondaryOwner) {
+    public void setSecondaryOwner(FirstPartyUser secondaryOwner) {
         this.secondaryOwner = secondaryOwner;
     }
 
