@@ -1,15 +1,17 @@
 package midterm.models.users;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    //FIXME same key generation engine used for account and its inherited subclasses
     protected Integer id;
 
+    @NotEmpty @NotNull
     String name;
 
     public User(){
