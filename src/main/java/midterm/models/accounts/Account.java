@@ -1,5 +1,6 @@
 package midterm.models.accounts;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import midterm.models.Address;
 import midterm.models.TransactionPartners;
 import midterm.models.enums.Period;
@@ -29,6 +30,7 @@ public abstract class Account {
     private AccountHolder secondaryOwner;
 
     @OneToMany(mappedBy="account")
+    @JsonIgnore
     private List<TransactionPartners> transactionPartners;
 
     private LocalDateTime creationDate;

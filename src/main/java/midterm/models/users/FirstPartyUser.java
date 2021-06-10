@@ -1,5 +1,6 @@
 package midterm.models.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import midterm.models.Address;
 import midterm.models.accounts.Account;
 
@@ -18,9 +19,11 @@ public abstract class FirstPartyUser extends User{
     private Address address;
 
     @OneToMany(mappedBy = "primaryOwner")
+    @JsonIgnore
     Set<Account> firstPartyAccounts=  new HashSet<>();
 
     @OneToMany(mappedBy = "secondaryOwner")
+    @JsonIgnore
     Set<Account> secondPartyAccounts=  new HashSet<>();
 
 

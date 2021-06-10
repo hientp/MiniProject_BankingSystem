@@ -1,5 +1,6 @@
 package midterm.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import midterm.models.users.FirstPartyUser;
 
 import javax.persistence.*;
@@ -28,6 +29,7 @@ public class Address {
 //    Set<FirstPartyUser> firstpartyuser;
 
     @OneToMany(mappedBy = "address")
+    @JsonIgnore
     private Set<FirstPartyUser> firstPartyUser =  new HashSet<>();
 
     public Address() {

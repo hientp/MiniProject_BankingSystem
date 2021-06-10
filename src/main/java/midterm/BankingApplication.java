@@ -13,10 +13,11 @@ public class BankingApplication {
 
 
     //a) Generate TestData
-    // http://localhost:8080/banking/testData/
+    //http://localhost:8080/banking/testData/
     //b) Get Account Information for a user
     //All CheckingAccounts
-    //http://localhost:8080//banking/checking_accounts
+    //http://localhost:8080/banking/checking_accounts
+    //
 
 
 }

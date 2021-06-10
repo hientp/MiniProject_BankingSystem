@@ -1,5 +1,7 @@
 package midterm.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,6 +17,7 @@ public class Transaction {
     private LocalDateTime dateTimeOfTransaction;
 
     @OneToMany(mappedBy="transaction")
+    @JsonIgnore
     private List<TransactionPartners> transactionPartners;
 
     private BigDecimal amount;
