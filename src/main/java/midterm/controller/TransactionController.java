@@ -36,7 +36,7 @@ public class TransactionController {
 
     //Anlegen von neuem checkingAccount
     @PostMapping("/banking/transferMoney/")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public Transaction transferMoney(@RequestBody @Valid TransactionDTO transactionDTO) {
         return transactionService.transferMoney(transactionDTO);
     }
