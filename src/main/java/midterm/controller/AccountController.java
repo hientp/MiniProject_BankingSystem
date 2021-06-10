@@ -33,7 +33,6 @@ public class AccountController {
     }
 
     //Erhalte CheckingAccount Informationen
-    //FIXME endlosschleife addresse - primaryuser
     @GetMapping("/banking/checking_accounts")
     @ResponseStatus(HttpStatus.OK)
     public List<CheckingAccount> search(@RequestParam Optional<Integer> primaryOwner) {

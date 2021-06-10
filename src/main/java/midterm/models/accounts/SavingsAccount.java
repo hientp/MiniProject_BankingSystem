@@ -23,7 +23,7 @@ public class SavingsAccount extends Account {
     @NotNull
     private BigDecimal interestRate= new BigDecimal("0.0025");
 
-
+    private Boolean isMinimumBalanceReached = Boolean.FALSE;
 
     @Enumerated(EnumType.STRING)
     private Status status= Status.ACTIVE;
@@ -49,6 +49,14 @@ public class SavingsAccount extends Account {
         setBalance(balance);
         this.minimumBalance = minimumBalance;
         this.status = status;
+    }
+
+    public Boolean getMinimumBalanceReached() {
+        return isMinimumBalanceReached;
+    }
+
+    public void setMinimumBalanceReached(Boolean minimumBalanceReached) {
+        isMinimumBalanceReached = minimumBalanceReached;
     }
 
     public BigDecimal getMinimumBalance() {
@@ -92,10 +100,21 @@ public class SavingsAccount extends Account {
         //Check if newBalance would be greater or equal zero
         if(newBalance.compareTo(new BigDecimal("0"))>=0){
             //Check if minimumBalance is reached
-            if(newBalance.compareTo(minimumBalance)<0){
-                super.setBalance(newBalance.subtract(getPenaltyFee()));
-            } else {
-                super.setBalance(newBalance);
+            if(!isMinimumBalanceReached) {
+                //unless the minimumBalance isn't reached, check if would now drop under the minimumBalance
+                if (newBalance.compareTo(this.minimumBalance) < 0) {
+                    super.setBalance(newBalance.subtract(getPenaltyFee()));
+                    setMinimumBalanceReached(Boolean.TRUE);
+                } else {
+                    super.setBalance(newBalance);
+                }
+            } else { //Case if MinimumBalance is already reached
+                if (newBalance.compareTo(this.minimumBalance) >= 0) {
+                    super.setBalance(newBalance);
+                    setMinimumBalanceReached(Boolean.FALSE);
+                } else {
+                    super.setBalance(newBalance);
+                }
             }
         } else {
             throw new Exception("The balance of this account would drop below 0! Transaction denied.");

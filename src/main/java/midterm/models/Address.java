@@ -42,6 +42,7 @@ public class Address {
         this.zipCode = zipCode;
     }
 
+    @JsonIgnore
     public Set<FirstPartyUser> getFirstpartyuser() {
         return firstPartyUser;
     }

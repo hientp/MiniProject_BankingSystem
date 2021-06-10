@@ -236,7 +236,6 @@ class AccountTests {
 
     @Test
     public void minimumBalance() throws Exception{
-        //FIXME how often the minimumbalance should be deducted?
         //a) Checking Accounts
         Address address = new Address("Default Str. 1", "Berlin", "Germany", "15x");
         AccountHolder accountHolder= new AccountHolder("Test_Customer_2", new Date(70, 5, 20), address);
@@ -244,6 +243,14 @@ class AccountTests {
         CheckingAccount checkingAccount = new CheckingAccount(balance0, "secretKey", accountHolder, null, Status.ACTIVE);
 
         checkingAccount.changeBalance(new BigDecimal("-250"));
+        assertEquals(checkingAccount.getBalance(),new BigDecimal("250"));
+        checkingAccount.changeBalance(new BigDecimal("-50"));
+        assertEquals(checkingAccount.getBalance(),new BigDecimal("160"));
+        //Wenn die MinimumBalance erreicht ist, wird keine weitere penaltyFee abgezogen, bis die balance wieder über
+        //dem Mindestbetrag liegt und erst dann wieder darunter fällt.
+        checkingAccount.changeBalance(new BigDecimal("-50"));
+        assertEquals(checkingAccount.getBalance(),new BigDecimal("110"));
+        checkingAccount.changeBalance(new BigDecimal("140"));
         assertEquals(checkingAccount.getBalance(),new BigDecimal("250"));
         checkingAccount.changeBalance(new BigDecimal("-50"));
         assertEquals(checkingAccount.getBalance(),new BigDecimal("160"));
@@ -258,6 +265,14 @@ class AccountTests {
         assertEquals(savingsAccount.getBalance(),new BigDecimal("1000"));
         savingsAccount.changeBalance(new BigDecimal("-200"));
         assertEquals(savingsAccount.getBalance(),new BigDecimal("760"));
+        //Wenn die MinimumBalance erreicht ist, wird keine weitere penaltyFee abgezogen, bis die balance wieder über
+        //dem Mindestbetrag liegt und erst dann wieder darunter fällt.
+        savingsAccount.changeBalance(new BigDecimal("-50"));
+        assertEquals(savingsAccount.getBalance(),new BigDecimal("710"));
+        savingsAccount.changeBalance(new BigDecimal("290"));
+        assertEquals(savingsAccount.getBalance(),new BigDecimal("1000"));
+        savingsAccount.changeBalance(new BigDecimal("-50"));
+        assertEquals(savingsAccount.getBalance(),new BigDecimal("910"));
 
     }
 
@@ -328,9 +343,10 @@ class AccountTests {
         checkingAccount.setCreationDate(thirteenMonthsBeforeNow);
 
         LocalDateTime date1= checkingAccount.getInterestRatePaymentDate();
+        //Balance minus maintenance fee
         LocalDateTime date2= LocalDateTime.now().minusMonths(1);
         assertEquals(date1.withNano(0),date2.withNano(0));
-        assertEquals(checkingAccount.getBalance(),balance0);
+        assertEquals(checkingAccount.getBalance(),balance0.add(new BigDecimal("-12")));
         date1= checkingAccount.getInterestRatePaymentDate();
         date2= LocalDateTime.now().plusMonths(11);
         assertEquals(date1.withNano(0),date2.withNano(0));
@@ -380,7 +396,18 @@ class AccountTests {
     @Test
     public void testMonthlyMaintenanceFee() throws Exception {
         //For checkingAccounts the maintenanceFee needs to be deducted from the balance each month
-        //fixme add deduction for monthlymaintenance fee
+        //Create new account one,two,three years ago from today and test if the correct interest is calculated
+        //a) Checking Accounts
+        Address address = new Address("Default Str. 1", "Berlin", "Germany", "15x");
+        AccountHolder accountHolder= new AccountHolder("Test_Customer_3", new Date(70, 5, 20), address);
+        BigDecimal balance0=new BigDecimal("1000");
+        CheckingAccount checkingAccount = new CheckingAccount(balance0, "secretKey", accountHolder, null, Status.ACTIVE);
+        LocalDateTime FiveWeeksBeforeNow = LocalDateTime.now().minusWeeks(5);
+        checkingAccount.setCreationDate(FiveWeeksBeforeNow);
+
+        assertEquals(new BigDecimal("988"),checkingAccount.getBalance());
+
+
     }
 
 
