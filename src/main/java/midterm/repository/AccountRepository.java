@@ -18,6 +18,13 @@ import java.util.List;
 @Repository
 public interface AccountRepository extends JpaRepository<Account,Integer> {
 
+    @Query(value = "from CheckingAccount where id=:Id")
+    CheckingAccount findCheckingAccountbyId(Integer Id);
+    @Query(value = "from SavingsAccount where id=:Id")
+    SavingsAccount findSavingsAccountbyId(Integer Id);
+    @Query(value = "from CreditCard where id=:Id")
+    CreditCard findCreditCardbyId(Integer Id);
+
     //Checking Accounts
     @Query(value = "from CheckingAccount where primaryOwner=:primaryOwner")
     List<CheckingAccount> findCheckingAccountByPrimaryOwner(FirstPartyUser primaryOwner);

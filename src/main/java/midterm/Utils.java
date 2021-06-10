@@ -27,6 +27,14 @@ import java.util.Optional;
 
 public class Utils {
 
+    //Function to find account by id
+    public static Account findAccountById(Integer id,AccountRepository accountRepository) throws Exception {
+        if(accountRepository.findCheckingAccountbyId(id) != null){return accountRepository.findCheckingAccountbyId(id);}
+        if(accountRepository.findSavingsAccountbyId(id) != null){return accountRepository.findSavingsAccountbyId(id);}
+        if(accountRepository.findCreditCardbyId(id) != null){return accountRepository.findCreditCardbyId(id);}
+        else { throw new Exception("Id not found!");}
+    }
+
     //Function to transact money with fraud detection activated and with given timestamp
     public static void transactMoneySecured(LocalDateTime TimeStamp, AccountRepository accountRepository, Account Sender, Account Receiver, TransactionRepository transactionRepository, TransactionPartnersRepository transactionPartnersRepository, BigDecimal amount) throws Exception {
         //Check if status is active

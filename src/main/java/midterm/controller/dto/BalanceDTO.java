@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public class BalanceDTO {
 
-    @NotNull(message = "You must supply a primary Owner!")
+    @NotNull(message = "You must supply a balance!")
     private BigDecimal balance;
 
     public BalanceDTO() {

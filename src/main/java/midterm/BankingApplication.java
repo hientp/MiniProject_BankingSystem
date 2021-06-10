@@ -15,11 +15,14 @@ public class BankingApplication {
     //a) Generate TestData
     //http://localhost:8080/banking/testData/
     //b) Get Account Information for a user
-    //All CheckingAccounts, SavingsAccounts, CreditCards
-    //http://localhost:8080/banking/checking_accounts/
-    //http://localhost:8080/banking/savings_accounts/
-    //http://localhost:8080/banking/credit_cards/
+    //All CheckingAccounts, SavingsAccounts, CreditCards + All accounts for a primaryuser
+    //http://localhost:8080/banking/checking_accounts/ +  http://localhost:8080/banking/checking_accounts/?user=1
+    //http://localhost:8080/banking/savings_accounts/ +  http://localhost:8080/banking/checking_accounts/?user=1
+    //http://localhost:8080/banking/credit_cards/ +  http://localhost:8080/banking/checking_accounts/?user=1
     //Create new account
+    //http://localhost:8080/banking/account/new_checking_account/
+    //http://localhost:8080/banking/account/new_savings_account/
+    //http://localhost:8080/banking/account/new_credit_card/
 
 
 
