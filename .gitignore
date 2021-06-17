@@ -153,3 +153,6 @@
 /target/classes/midterm/models/
 /target/classes/midterm/repository/
 /target/test-classes/midterm/
+/BankingSystem.iml
+/target/test-classes/application-hien.properties
+/target/classes/application-hien.properties

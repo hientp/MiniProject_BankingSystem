@@ -52,10 +52,7 @@ class AccountControllerTest {
     UserRepository userRepository;
     @Autowired
     AddressRepository addressRepository;
-    @Autowired
-    TransactionRepository transactionRepository;
-    @Autowired
-    TransactionPartnersRepository transactionPartnersRepository;
+
 
     Address address1,address2;
     AccountHolder a1,a2,a3;

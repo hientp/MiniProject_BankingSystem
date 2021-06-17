@@ -1,6 +1,5 @@
 package midterm.controller.dto;
 
-import midterm.models.TransactionPartners;
 import midterm.models.users.AccountHolder;
 
 import javax.persistence.*;

@@ -2,8 +2,6 @@ package midterm.service;
 
 import midterm.Utils;
 import midterm.models.Address;
-import midterm.models.Transaction;
-import midterm.models.TransactionPartners;
 import midterm.models.accounts.CheckingAccount;
 import midterm.models.accounts.CreditCard;
 import midterm.models.accounts.SavingsAccount;
@@ -31,15 +29,15 @@ public class TestData {
     UserRepository userRepository;
     @Autowired
     AddressRepository addressRepository;
-    @Autowired
-    TransactionRepository transactionRepository;
-    @Autowired
-    TransactionPartnersRepository transactionPartnersRepository;
+//    @Autowired
+//    TransactionRepository transactionRepository;
+//    @Autowired
+//    TransactionPartnersRepository transactionPartnersRepository;
 
     //Init class instances
     List<Address> addressList = new ArrayList<Address>();
-    Transaction transaction;
-    TransactionPartners transactionPartner1, transactionPartner2;
+//    Transaction transaction;
+//    TransactionPartners transactionPartner1, transactionPartner2;
     List<CheckingAccount> checkingAccountList = new ArrayList<CheckingAccount>();
     List<SavingsAccount> savingsAccountList = new ArrayList<SavingsAccount>();
     List<CreditCard> creditCardList = new ArrayList<CreditCard>();
@@ -94,11 +92,11 @@ public class TestData {
                 accountRepository.save(checkingAccountList.get(i));
             }
             //Transactions
-            BigDecimal amount;
-            for (int i = 0; i < 25; i++) {
-                amount = new BigDecimal("10").multiply(BigDecimal.valueOf(i));
-                Utils.transactMoney(accountRepository, checkingAccountList.get(i), checkingAccountList.get(i + 25), transactionRepository, transactionPartnersRepository, amount);
-            }
+//            BigDecimal amount;
+//            for (int i = 0; i < 25; i++) {
+//                amount = new BigDecimal("10").multiply(BigDecimal.valueOf(i));
+//                Utils.transactMoney(accountRepository, checkingAccountList.get(i), checkingAccountList.get(i + 25), transactionRepository, transactionPartnersRepository, amount);
+//            }
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Data already exists.");
         }

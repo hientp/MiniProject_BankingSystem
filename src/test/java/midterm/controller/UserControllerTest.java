@@ -1,16 +1,9 @@
 package midterm.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import midterm.controller.dto.CheckingAccountDTO;
 import midterm.controller.dto.FirstPartyUserDTO;
 import midterm.controller.dto.ThirdPartyDTO;
 import midterm.models.Address;
-import midterm.models.Transaction;
-import midterm.models.TransactionPartners;
-import midterm.models.accounts.CheckingAccount;
-import midterm.models.accounts.CreditCard;
-import midterm.models.accounts.SavingsAccount;
-import midterm.models.enums.Status;
 import midterm.models.users.AccountHolder;
 import midterm.models.users.Admin;
 import midterm.models.users.ThirdParty;
@@ -28,7 +21,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -56,10 +48,7 @@ class UserControllerTest {
     UserRepository userRepository;
     @Autowired
     AddressRepository addressRepository;
-    @Autowired
-    TransactionRepository transactionRepository;
-    @Autowired
-    TransactionPartnersRepository transactionPartnersRepository;
+
 
     //Init class instances
     List<Address> addressList = new ArrayList<Address>();
