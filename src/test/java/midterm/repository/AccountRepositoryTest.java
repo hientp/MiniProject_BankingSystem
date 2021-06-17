@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ActiveProfiles(profiles = "patrick")
+@ActiveProfiles(profiles = {"patrick","hien","stefan"})
 class AccountRepositoryTest {
 
     //Init Repos

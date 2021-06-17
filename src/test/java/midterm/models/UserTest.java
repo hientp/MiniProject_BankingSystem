@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ActiveProfiles(profiles = "patrick")
+@ActiveProfiles(profiles = {"patrick","hien","stefan"})
 class UserTest {
 
     @Autowired

@@ -40,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ActiveProfiles(profiles = "patrick")
+@ActiveProfiles(profiles = {"patrick","hien","stefan"})
 class TransactionControllerTest {
 
     @Autowired

@@ -26,7 +26,7 @@ import java.util.UUID;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ActiveProfiles(profiles = "patrick")
+@ActiveProfiles(profiles = {"patrick","hien","stefan"})
 public class GenerateTestData {
 
     @Autowired
