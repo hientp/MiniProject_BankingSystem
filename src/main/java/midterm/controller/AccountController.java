@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,17 +45,33 @@ public class AccountController {
     }
 
     //Erhalte CheckingAccount Informationen
-    @GetMapping("/banking/checking_accounts/")
+    @RequestMapping(value = "/banking/checking_accounts/", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseStatus(HttpStatus.OK)
-    public List<CheckingAccount> searchCheckingAccount(@RequestParam Optional<Integer> user) {
-        if(user.isPresent()) {
+    public List<CheckingAccountDTO> searchCheckingAccount(@RequestBody Optional<Integer> user) {
+        if (user.isPresent()) {
             FirstPartyUser primaryOwner = (FirstPartyUser) userRepository.findById(user.get()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-            return accountRepository.findCheckingAccountByPrimaryOwner(primaryOwner);
-        } else {
-            return accountRepository.findAllCheckingAccounts();
-        }
-    }
+            List<CheckingAccount> checkingAccountList = accountRepository.findCheckingAccountByPrimaryOwner(primaryOwner);
 
+            List<CheckingAccountDTO> checkingAccountDTOList = new ArrayList<>();
+            for (int x = 0; x < checkingAccountList.size(); x++) {
+                CheckingAccount checkingAccount = checkingAccountList.get(x);
+                checkingAccountDTOList.add(new CheckingAccountDTO(checkingAccount.getPrimaryOwner().getId(), null, checkingAccount.getCreationDate(), checkingAccount.getBalance(), checkingAccount.getSecretKey()));
+            }
+
+            return checkingAccountDTOList;
+        } else {
+            List<CheckingAccount> checkingAccountList = accountRepository.findAllCheckingAccounts();
+
+            List<CheckingAccountDTO> checkingAccountDTOList = new ArrayList<>();
+            for (int x = 0; x < checkingAccountList.size(); x++) {
+                CheckingAccount checkingAccount = checkingAccountList.get(x);
+                checkingAccountDTOList.add(new CheckingAccountDTO(checkingAccount.getPrimaryOwner().getId(), null, checkingAccount.getCreationDate(), checkingAccount.getBalance(), checkingAccount.getSecretKey()));
+
+            }
+            return checkingAccountDTOList;
+        }
+
+    }
 //    @GetMapping("/banking/checking_accounts/{userId}")
 //    @ResponseStatus(HttpStatus.OK)
 //    public List<CheckingAccount> searchCheckingAccountByID(@PathVariable Integer userId) {
