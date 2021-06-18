@@ -88,7 +88,7 @@ public class AccountController {
             List<SavingsAccount> savingsAccountList = accountRepository.findSavingsAccountByPrimaryOwner(primaryOwner);
 
             List<SavingsAccountDTO> savingsAccountDTOList = new ArrayList<>();
-            for (int x = 0; x < savingsAccountDTOList.size(); x++) {
+            for (int x = 0; x < savingsAccountList.size(); x++) {
                 SavingsAccount savingsAccount = savingsAccountList.get(x);
                 savingsAccountDTOList.add(new SavingsAccountDTO(savingsAccount.getPrimaryOwner().getId(), null, savingsAccount.getCreationDate(), savingsAccount.getBalance(), savingsAccount.getSecretKey(),savingsAccount.getMinimumBalance(),savingsAccount.getInterestRate()));
             }
@@ -98,7 +98,7 @@ public class AccountController {
             List<SavingsAccount> savingsAccountList = accountRepository.findAllSavingsAccounts();
 
             List<SavingsAccountDTO> savingsAccountDTOList = new ArrayList<>();
-            for (int x = 0; x < savingsAccountDTOList.size(); x++) {
+            for (int x = 0; x < savingsAccountList.size(); x++) {
                 SavingsAccount savingsAccount = savingsAccountList.get(x);
                 savingsAccountDTOList.add(new SavingsAccountDTO(savingsAccount.getPrimaryOwner().getId(), null, savingsAccount.getCreationDate(), savingsAccount.getBalance(), savingsAccount.getSecretKey(),savingsAccount.getMinimumBalance(),savingsAccount.getInterestRate()));
             }
@@ -115,7 +115,7 @@ public class AccountController {
             List<CreditCard> creditCardList = accountRepository.findCreditCardByPrimaryOwner(primaryOwner);
 
             List<CreditCardDTO> creditCardDTOList = new ArrayList<>();
-            for (int x = 0; x < creditCardDTOList.size(); x++) {
+            for (int x = 0; x < creditCardList.size(); x++) {
                 CreditCard creditCard = creditCardList.get(x);
                 creditCardDTOList.add(new CreditCardDTO(creditCard.getPrimaryOwner().getId(), null, creditCard.getCreationDate(), creditCard.getBalance(), creditCard.getSecretKey(),creditCard.getCreditLimit(),creditCard.getInterestRate()));
             }
@@ -125,7 +125,7 @@ public class AccountController {
             List<CreditCard> creditCardList = accountRepository.findAllCreditCards();
 
             List<CreditCardDTO> creditCardDTOList = new ArrayList<>();
-            for (int x = 0; x < creditCardDTOList.size(); x++) {
+            for (int x = 0; x < creditCardList.size(); x++) {
                 CreditCard creditCard = creditCardList.get(x);
                 creditCardDTOList.add(new CreditCardDTO(creditCard.getPrimaryOwner().getId(), null, creditCard.getCreationDate(), creditCard.getBalance(), creditCard.getSecretKey(),creditCard.getCreditLimit(),creditCard.getInterestRate()));
             }
@@ -142,21 +142,21 @@ public class AccountController {
     }
 
     //Modify balance checking account
-    @PatchMapping("/banking/checking_account_balance/{id}")
+    @PutMapping("/banking/checking_account_balance/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CheckingAccount modifyCheckingAccountBalance(@PathVariable Integer id, @RequestBody @Valid BalanceDTO balanceDTO)  {
          return accountService.modifyCheckingAccountBalance(id,balanceDTO);
     }
 
     //Modify balance savings account
-    @PatchMapping("/banking/savings_account_balance/{id}")
+    @PutMapping("/banking/savings_account_balance/{id}")
     @ResponseStatus(HttpStatus.OK)
     public SavingsAccount modifySavingsAccountBalance(@PathVariable Integer id, @RequestBody @Valid BalanceDTO balanceDTO)  {
         return accountService.modifySavingsAccountBalance(id,balanceDTO);
     }
 
     //Modify balance credit card
-    @PatchMapping("/banking/credit_card_balance/{id}")
+    @PutMapping("/banking/credit_card_balance/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CreditCard modifyCreditCardBalance(@PathVariable Integer id, @RequestBody @Valid BalanceDTO balanceDTO)  {
         return accountService.modifyCreditCardBalance(id,balanceDTO);
