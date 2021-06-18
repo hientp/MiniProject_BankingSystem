@@ -80,27 +80,57 @@ public class AccountController {
 //    }
 
 
-    //Erhalte SavingsAccount Informationen
-    @GetMapping("/banking/savings_accounts/")
+    @RequestMapping(value = "/banking/savings_accounts/", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseStatus(HttpStatus.OK)
-    public List<SavingsAccount> searchSavingsAccount(@RequestParam Optional<Integer> user) {
-        if(user.isPresent()) {
+    public List<SavingsAccountDTO> searchSavingsAccount(@RequestBody Optional<Integer> user) {
+        if (user.isPresent()) {
             FirstPartyUser primaryOwner = (FirstPartyUser) userRepository.findById(user.get()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-            return accountRepository.findSavingsAccountByPrimaryOwner(primaryOwner);
+            List<SavingsAccount> savingsAccountList = accountRepository.findSavingsAccountByPrimaryOwner(primaryOwner);
+
+            List<SavingsAccountDTO> savingsAccountDTOList = new ArrayList<>();
+            for (int x = 0; x < savingsAccountDTOList.size(); x++) {
+                SavingsAccount savingsAccount = savingsAccountList.get(x);
+                savingsAccountDTOList.add(new SavingsAccountDTO(savingsAccount.getPrimaryOwner().getId(), null, savingsAccount.getCreationDate(), savingsAccount.getBalance(), savingsAccount.getSecretKey(),savingsAccount.getMinimumBalance(),savingsAccount.getInterestRate()));
+            }
+
+            return savingsAccountDTOList;
         } else {
-            return accountRepository.findAllSavingsAccounts();
+            List<SavingsAccount> savingsAccountList = accountRepository.findAllSavingsAccounts();
+
+            List<SavingsAccountDTO> savingsAccountDTOList = new ArrayList<>();
+            for (int x = 0; x < savingsAccountDTOList.size(); x++) {
+                SavingsAccount savingsAccount = savingsAccountList.get(x);
+                savingsAccountDTOList.add(new SavingsAccountDTO(savingsAccount.getPrimaryOwner().getId(), null, savingsAccount.getCreationDate(), savingsAccount.getBalance(), savingsAccount.getSecretKey(),savingsAccount.getMinimumBalance(),savingsAccount.getInterestRate()));
+            }
+            return savingsAccountDTOList;
         }
     }
 
     //Erhalte CreditCard Informationen
-    @GetMapping("/banking/credit_cards/")
+   @RequestMapping(value = "/banking/credit_cards/", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseStatus(HttpStatus.OK)
-    public List<CreditCard> searchCreditCard(@RequestParam Optional<Integer> user) {
-        if(user.isPresent()) {
+    public List<CreditCardDTO> searchCreditCard(@RequestBody Optional<Integer> user) {
+        if (user.isPresent()) {
             FirstPartyUser primaryOwner = (FirstPartyUser) userRepository.findById(user.get()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-            return accountRepository.findCreditCardByPrimaryOwner(primaryOwner);
+            List<CreditCard> creditCardList = accountRepository.findCreditCardByPrimaryOwner(primaryOwner);
+
+            List<CreditCardDTO> creditCardDTOList = new ArrayList<>();
+            for (int x = 0; x < creditCardDTOList.size(); x++) {
+                CreditCard creditCard = creditCardList.get(x);
+                creditCardDTOList.add(new CreditCardDTO(creditCard.getPrimaryOwner().getId(), null, creditCard.getCreationDate(), creditCard.getBalance(), creditCard.getSecretKey(),creditCard.getCreditLimit(),creditCard.getInterestRate()));
+            }
+
+            return creditCardDTOList;
         } else {
-            return accountRepository.findAllCreditCards();
+            List<CreditCard> creditCardList = accountRepository.findAllCreditCards();
+
+            List<CreditCardDTO> creditCardDTOList = new ArrayList<>();
+            for (int x = 0; x < creditCardDTOList.size(); x++) {
+                CreditCard creditCard = creditCardList.get(x);
+                creditCardDTOList.add(new CreditCardDTO(creditCard.getPrimaryOwner().getId(), null, creditCard.getCreationDate(), creditCard.getBalance(), creditCard.getSecretKey(),creditCard.getCreditLimit(),creditCard.getInterestRate()));
+            }
+
+            return creditCardDTOList;
         }
     }
 
